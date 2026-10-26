@@ -1,0 +1,12 @@
+cwe,name_from_source,original_scope_exclusions,additional_review_candidates,remaining_exclusion_reasons,mitre_reference
+CWE-287,Improper Authentication,19,18,"{""no_js_ts_file_in_patch"": 1}",https://cwe.mitre.org/data/definitions/287.html
+CWE-306,Missing Authentication for Critical Function,11,11,{},https://cwe.mitre.org/data/definitions/306.html
+CWE-79,Cross-Site Scripting (XSS),10,8,"{""no_js_ts_file_in_patch"": 1, ""non_code_remediation"": 1}",https://cwe.mitre.org/data/definitions/79.html
+CWE-94,Code Injection,8,6,"{""non_code_remediation"": 2}",https://cwe.mitre.org/data/definitions/94.html
+CWE-352,Cross-Site Request Forgery (CSRF),7,4,"{""no_js_ts_file_in_patch"": 1, ""non_code_remediation"": 2}",https://cwe.mitre.org/data/definitions/352.html
+CWE-434,Unrestricted Upload of File with Dangerous Type,7,6,"{""no_js_ts_file_in_patch"": 1}",https://cwe.mitre.org/data/definitions/434.html
+CWE-798,Use of Hard-coded Credentials,4,3,"{""non_code_remediation"": 1}",https://cwe.mitre.org/data/definitions/798.html
+CWE-22,Path Traversal,2,1,"{""no_js_ts_file_in_patch"": 1}",https://cwe.mitre.org/data/definitions/22.html
+CWE-918,Server-Side Request Forgery (SSRF),2,1,"{""no_js_ts_file_in_patch"": 1}",https://cwe.mitre.org/data/definitions/918.html
+CWE-611,Improper Restriction of XML External Entity Reference (XXE),1,1,{},https://cwe.mitre.org/data/definitions/611.html
+CWE-78,OS Command Injection,1,1,{},https://cwe.mitre.org/data/definitions/78.html

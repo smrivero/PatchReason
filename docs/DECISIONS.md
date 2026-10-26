@@ -21,3 +21,24 @@
 ## Change policy
 
 Log the date, reason, impact and links when altering a decision. Never silently replace measured results or configuration artifacts.
+
+### External source intake: pinned revisions and review queue
+
+Decision date: 2026-10-26.
+
+Use Hugging Face Security Vulnerability Fix Patches as the first lightweight
+source of code-change candidates. Resolve and record a Hugging Face commit SHA.
+Check actual changed JS/TS file paths because the declared language label can
+differ from the patched files. Prefer the official CVEfixes SQLite archive for
+additional CVE-linked source, but ingest it separately due to download size
+and different annotation semantics.
+
+Raw source material, original diffs and candidate records remain untracked.
+Only source links, transformations, manifests and aggregate reports go into Git.
+No records enter NeMo fine-tuning without provenance, license and technical
+annotation approval. Reserve independent public code-review benchmarks for
+separate evaluation rather than training.
+
+### Decision: review expanded CWE coverage
+
+The first Hugging Face source selection returned only 11 candidates from 355 records under a five-CWE scope. We retained the TypeScript/JavaScript focus but added an independent coverage analysis for the remaining CWE categories. New records must meet the same remediation, diff and provenance criteria and must undergo manual review before training. See [CWE Scope Review](CWE_SCOPE_REVIEW.md).

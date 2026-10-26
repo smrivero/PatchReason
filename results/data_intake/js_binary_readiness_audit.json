@@ -1,0 +1,104 @@
+{
+  "project": "PatchReason",
+  "source_revision": "7f36e5e1f0868d963c109acae5db4b094950675b",
+  "source": "sijjeel/js-vuln-dataset",
+  "data_scope": "binary JavaScript vulnerability labels only",
+  "splits": {
+    "train": {
+      "count": 4000,
+      "labels": {
+        "vulnerable": 2000,
+        "safe": 2000
+      },
+      "code_character_lengths": {
+        "vulnerable": {
+          "min": 40,
+          "p50": 660,
+          "p90": 2049,
+          "p95": 3321,
+          "max": 11792,
+          "mean": 1061.5
+        },
+        "safe": {
+          "min": 40,
+          "p50": 503,
+          "p90": 1550,
+          "p95": 2574,
+          "max": 11504,
+          "mean": 818.5
+        }
+      },
+      "verified_original_sha256": "663f5013f817acfaa9ccaa0929817ad22d6907bde8ad4b78d37cc6a5cf299ff8"
+    },
+    "validation": {
+      "count": 300,
+      "labels": {
+        "vulnerable": 150,
+        "safe": 150
+      },
+      "code_character_lengths": {
+        "vulnerable": {
+          "min": 57,
+          "p50": 831,
+          "p90": 2392,
+          "p95": 4054,
+          "max": 10939,
+          "mean": 1210.1
+        },
+        "safe": {
+          "min": 48,
+          "p50": 505,
+          "p90": 2007,
+          "p95": 3170,
+          "max": 10630,
+          "mean": 919.6
+        }
+      },
+      "verified_original_sha256": "c45f1c12044c471816c7e909a8af76cb27370e58c8fff682f6ca3c084f07d71f"
+    },
+    "test": {
+      "count": 300,
+      "labels": {
+        "vulnerable": 150,
+        "safe": 150
+      },
+      "code_character_lengths": {
+        "vulnerable": {
+          "min": 50,
+          "p50": 672,
+          "p90": 2562,
+          "p95": 5443,
+          "max": 11731,
+          "mean": 1353.4
+        },
+        "safe": {
+          "min": 40,
+          "p50": 496,
+          "p90": 1481,
+          "p95": 2093,
+          "max": 11730,
+          "mean": 793.9
+        }
+      },
+      "verified_original_sha256": "f5b64971173c09727354623ad7c5d43e7fa5fd6fffbec8e7ad43e166e78e6a42"
+    }
+  },
+  "quality_gate": "NOT APPROVED",
+  "methodology": "Local deterministic source-level summary. No tokenizer; length statistics are characters, not tokens.",
+  "limitations": [
+    "CWE labels and fixes unavailable",
+    "Per-repository/CVE overlap not measured",
+    "Upstream label quality not verified",
+    "Permissions/license review pending",
+    "Source code may be present in model pretraining",
+    "Length distributions may be confounded with source labels"
+  ],
+  "train_mean_code_length_ratio_vulnerable_to_safe": 1.297,
+  "train_p95_code_chars": 3321,
+  "readiness_flags": [
+    "Chat JSONL format and hashes verified; semantic label reliability is not established.",
+    "A 50:50 training split is balanced artificially and does not reflect vulnerability prevalence.",
+    "Real token lengths require Qwen3.5 tokenizer and chat template; do not size GPU using character count alone.",
+    "The final test set must remain held out until final model comparison."
+  ]
+}

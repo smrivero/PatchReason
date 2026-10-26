@@ -1,0 +1,153 @@
+{
+  "project": "PatchReason",
+  "stage": "cwe_scope_review_only",
+  "source": "https://huggingface.co/datasets/rgaucher/security-vuln-patches",
+  "source_revision": "cc56b3a3f17cc6a18c8f385694c14646502999fa",
+  "source_sha256": "0a0a02ba34a8a7eaa6692dc51203683271ee29710914adc24df87d3187ddbd0d",
+  "original_intake_candidates": 11,
+  "original_scope_exclusions": 72,
+  "expanded_scope_candidates": 71,
+  "new_candidate_rows": 60,
+  "original_candidate_rows_displaced_by_deduplication": 0,
+  "training_approved_rows": 0,
+  "baseline_counts_by_cwe": {
+    "CWE-862": 6,
+    "CWE-863": 3,
+    "CWE-89": 2
+  },
+  "expanded_counts_by_cwe": {
+    "CWE-22": 1,
+    "CWE-287": 18,
+    "CWE-306": 11,
+    "CWE-352": 4,
+    "CWE-434": 6,
+    "CWE-611": 1,
+    "CWE-78": 1,
+    "CWE-79": 8,
+    "CWE-798": 3,
+    "CWE-862": 6,
+    "CWE-863": 3,
+    "CWE-89": 2,
+    "CWE-918": 1,
+    "CWE-94": 6
+  },
+  "expanded_exclusion_reasons": {
+    "language_not_js_ts": 271,
+    "no_js_ts_file_in_patch": 7,
+    "non_code_remediation": 6
+  },
+  "previously_out_of_scope_cwes": [
+    {
+      "cwe": "CWE-287",
+      "name_from_source": "Improper Authentication",
+      "original_scope_exclusions": 19,
+      "additional_review_candidates": 18,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/287.html"
+    },
+    {
+      "cwe": "CWE-306",
+      "name_from_source": "Missing Authentication for Critical Function",
+      "original_scope_exclusions": 11,
+      "additional_review_candidates": 11,
+      "remaining_exclusion_reasons": {},
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/306.html"
+    },
+    {
+      "cwe": "CWE-79",
+      "name_from_source": "Cross-Site Scripting (XSS)",
+      "original_scope_exclusions": 10,
+      "additional_review_candidates": 8,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1,
+        "non_code_remediation": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/79.html"
+    },
+    {
+      "cwe": "CWE-94",
+      "name_from_source": "Code Injection",
+      "original_scope_exclusions": 8,
+      "additional_review_candidates": 6,
+      "remaining_exclusion_reasons": {
+        "non_code_remediation": 2
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/94.html"
+    },
+    {
+      "cwe": "CWE-352",
+      "name_from_source": "Cross-Site Request Forgery (CSRF)",
+      "original_scope_exclusions": 7,
+      "additional_review_candidates": 4,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1,
+        "non_code_remediation": 2
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/352.html"
+    },
+    {
+      "cwe": "CWE-434",
+      "name_from_source": "Unrestricted Upload of File with Dangerous Type",
+      "original_scope_exclusions": 7,
+      "additional_review_candidates": 6,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/434.html"
+    },
+    {
+      "cwe": "CWE-798",
+      "name_from_source": "Use of Hard-coded Credentials",
+      "original_scope_exclusions": 4,
+      "additional_review_candidates": 3,
+      "remaining_exclusion_reasons": {
+        "non_code_remediation": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/798.html"
+    },
+    {
+      "cwe": "CWE-22",
+      "name_from_source": "Path Traversal",
+      "original_scope_exclusions": 2,
+      "additional_review_candidates": 1,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/22.html"
+    },
+    {
+      "cwe": "CWE-918",
+      "name_from_source": "Server-Side Request Forgery (SSRF)",
+      "original_scope_exclusions": 2,
+      "additional_review_candidates": 1,
+      "remaining_exclusion_reasons": {
+        "no_js_ts_file_in_patch": 1
+      },
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/918.html"
+    },
+    {
+      "cwe": "CWE-611",
+      "name_from_source": "Improper Restriction of XML External Entity Reference (XXE)",
+      "original_scope_exclusions": 1,
+      "additional_review_candidates": 1,
+      "remaining_exclusion_reasons": {},
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/611.html"
+    },
+    {
+      "cwe": "CWE-78",
+      "name_from_source": "OS Command Injection",
+      "original_scope_exclusions": 1,
+      "additional_review_candidates": 1,
+      "remaining_exclusion_reasons": {},
+      "mitre_reference": "https://cwe.mitre.org/data/definitions/78.html"
+    }
+  ],
+  "limitations": [
+    "Candidate records are not independently reviewed or approved for training.",
+    "Dataset classifications originated in an LLM-assisted validation process.",
+    "CWE counts do not establish security validity, source license rights, or model pretraining independence.",
+    "Removing the CWE restriction can change deduplication priority when duplicate patches exist."
+  ]
+}

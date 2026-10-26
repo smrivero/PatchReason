@@ -2,7 +2,7 @@
   "project": "PatchReason",
   "source": "https://huggingface.co/datasets/sijjeel/js-vuln-dataset",
   "source_revision": "7f36e5e1f0868d963c109acae5db4b094950675b",
-  "created_at_utc": "2026-10-26T16:34:52.104123+00:00",
+  "created_at_utc": "2026-10-26T16:37:54.180502+00:00",
   "source_counts": {
     "train": 6990,
     "validation": 1498,
@@ -28,22 +28,22 @@
     }
   },
   "selected_counts": {
-    "test": 200,
-    "validation": 200,
-    "train": 1500
+    "test": 300,
+    "validation": 300,
+    "train": 4000
   },
   "labels": {
     "test": {
-      "vulnerable": 100,
-      "safe": 100
+      "vulnerable": 150,
+      "safe": 150
     },
     "validation": {
-      "vulnerable": 100,
-      "safe": 100
+      "vulnerable": 150,
+      "safe": 150
     },
     "train": {
-      "vulnerable": 750,
-      "safe": 750
+      "vulnerable": 2000,
+      "safe": 2000
     }
   },
   "duplicates_across_selected_partitions": 0,
@@ -51,13 +51,13 @@
     "test": {},
     "validation": {},
     "train": {
-      "previously_selected_duplicate": 3
+      "previously_selected_duplicate": 8
     }
   },
   "private_files_sha256": {
-    "train": "837a7260455a1a293a5af56e9b3e1086e422e651ce47f110e2a0729843608153",
-    "validation": "980a2eefc74f626b0bba288009f9ef8c7c9976cd850bae41b2d608cf274c8f26",
-    "test": "9066f23463e0ecac2900e30b97bceb824ee81e401df52eff74c70f19a90d50a9"
+    "train": "663f5013f817acfaa9ccaa0929817ad22d6907bde8ad4b78d37cc6a5cf299ff8",
+    "validation": "c45f1c12044c471816c7e909a8af76cb27370e58c8fff682f6ca3c084f07d71f",
+    "test": "f5b64971173c09727354623ad7c5d43e7fa5fd6fffbec8e7ad43e166e78e6a42"
   },
   "sampling": "Deterministic hash ordering, balanced by source label; original source partitions respected.",
   "training_admission": "pending_label_spot_review_and_license_review",

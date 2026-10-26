@@ -1,0 +1,4 @@
+# Install in a dedicated macOS Python environment (Python >= 3.10).
+# Versions should be locked after the first successful source intake.
+datasets>=3.0,<5.0
+huggingface-hub>=0.29,<2.0

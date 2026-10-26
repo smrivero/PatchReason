@@ -1,0 +1,46 @@
+{
+  "project": "PatchReason",
+  "stage": "external_source_intake_only",
+  "source_url": "https://huggingface.co/datasets/rgaucher/security-vuln-patches",
+  "source_revision": "cc56b3a3f17cc6a18c8f385694c14646502999fa",
+  "collected_at_utc": "2026-10-26T15:50:29.039092+00:00",
+  "rows_read": 355,
+  "review_candidates": 11,
+  "exclusions": {
+    "language_not_js_ts": 271,
+    "no_js_ts_file_in_patch": 1,
+    "out_of_scope_cwe": 72
+  },
+  "candidate_cwes": {
+    "CWE-862": 6,
+    "CWE-863": 3,
+    "CWE-89": 2
+  },
+  "candidate_repositories": 10,
+  "raw_sha256": "0a0a02ba34a8a7eaa6692dc51203683271ee29710914adc24df87d3187ddbd0d",
+  "candidates_sha256": "849ecceb50b1e7bf75ffe183967b41c34ebb5c1dab884be41726933e4b39bf1a",
+  "review_notice": "No records are validated for training or final scoring. Original upstream repository rights require review.",
+  "selection": {
+    "languages": [
+      "javascript",
+      "typescript"
+    ],
+    "cwes": [
+      89,
+      639,
+      862,
+      863,
+      915
+    ],
+    "file_extensions": [
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".mjs",
+      ".cjs"
+    ],
+    "remediation": "code_fix",
+    "max_patch_chars": 100000
+  }
+}

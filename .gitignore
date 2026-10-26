@@ -35,3 +35,6 @@ datasets/private/
 datasets/train.jsonl
 datasets/validation.jsonl
 datasets/evaluation.jsonl
+
+/artifacts/raw/
+/artifacts/tmp/

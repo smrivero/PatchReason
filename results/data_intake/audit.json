@@ -1,0 +1,11 @@
+{
+  "stage": "external_source_intake_only",
+  "rows": 11,
+  "source_counts": {
+    "rgaucher/security-vuln-patches": 11
+  },
+  "unique_repositories": 10,
+  "exact_normalized_duplicate_groups": [],
+  "limits": "Whitespace-normalized matching does not catch semantic near duplicates, shared CVEs, lineage, or pretraining contamination. Manual and repository/CVE overlap review required.",
+  "training_approved_rows": 0
+}
