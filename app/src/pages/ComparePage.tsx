@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CodeEditor } from "../components/review/CodeEditor";
 import { ExampleSelect } from "../components/review/ExampleSelect";
 import { FindingsPane } from "../components/review/FindingsPane";
@@ -9,34 +9,31 @@ import { StatusChip } from "../components/status/StatusChip";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useWorkspace } from "../hooks/useWorkspace";
 import { postReview, readApiBase } from "../lib/api/client";
-import { findReviewExample, illustrativeReview } from "../lib/fixtures/reviewExamples";
-import { adaptedModelId, baselineModelId, catalogModelById } from "../lib/models/catalog";
+import { adaptedModelId, baselineModelId, catalogModelById, jetsonModelId } from "../lib/models/catalog";
 import { diffFindings } from "../lib/review/diffFindings";
-import { formatTiming } from "../lib/review/formatFindings";
+import { formatLatency, formatTiming } from "../lib/review/formatFindings";
 import { buildReviewRequest } from "../lib/review/validateRequest";
 import type { ReviewPaneState, Timing } from "../types/domain";
 
 function latencyLine(baseline: Timing, adapted: Timing): string {
   if (baseline.kind !== "measured" || adapted.kind !== "measured") return "Pending collection";
   const delta = adapted.latencyMs - baseline.latencyMs;
-  return `Baseline ${baseline.latencyMs.toFixed(1)} ms. Adapted ${adapted.latencyMs.toFixed(1)} ms. Adapted minus baseline ${delta.toFixed(1)} ms.`;
+  return `Baseline ${formatLatency(baseline.latencyMs)}. Adapted ${formatLatency(adapted.latencyMs)}. Adapted minus baseline ${formatLatency(delta)}.`;
 }
 
 export function ComparePage() {
   usePageTitle("Comparison");
-  const { demoMode, draft, setDraft } = useWorkspace();
+  const { draft, setDraft, gateway } = useWorkspace();
   const [left, setLeft] = useState<ReviewPaneState>({ kind: "idle" });
   const [right, setRight] = useState<ReviewPaneState>({ kind: "idle" });
   const [formError, setFormError] = useState("");
   const base = readApiBase();
-  const apiReady = base.kind === "ready";
-
-  useEffect(() => {
-    if (!demoMode) {
-      setLeft((current) => (current.kind === "fixture" ? { kind: "idle" } : current));
-      setRight((current) => (current.kind === "fixture" ? { kind: "idle" } : current));
-    }
-  }, [demoMode]);
+  const jetsonGateway = gateway.kind === "online" && gateway.status.liveModelId === jetsonModelId;
+  const canCompare =
+    base.kind === "ready" &&
+    gateway.kind === "online" &&
+    !jetsonGateway &&
+    gateway.status.inference === "ready";
 
   function replaceCode(code: string): void {
     setDraft({ ...draft, code });
@@ -56,8 +53,12 @@ export function ComparePage() {
       setFormError(adaptedRequest.message);
       return;
     }
-    if (base.kind !== "ready") {
-      setFormError("Both requests stay disabled until VITE_API_BASE_URL points at a PatchReason gateway.");
+    if (jetsonGateway) {
+      setFormError("This gateway serves Jetson Qwen3.5:4B. Qwen3.5-27B and the B200 LoRA adapter are reserved for a later gateway.");
+      return;
+    }
+    if (!canCompare || base.kind !== "ready") {
+      setFormError("Both requests stay disabled until a gateway reports the 27B models ready.");
       return;
     }
     setFormError("");
@@ -71,27 +72,16 @@ export function ComparePage() {
     setRight(adaptedResult.kind === "error" ? { kind: "error", message: adaptedResult.message } : { kind: "model", review: adaptedResult.value });
   }
 
-  function showFixture(): void {
-    if (draft.language !== "typescript") {
-      setFormError("The synthetic references are TypeScript.");
-      return;
-    }
-    const match = findReviewExample(draft.code, "typescript");
-    if (match === undefined) {
-      setFormError("Illustrative findings are available only for an unchanged synthetic reference example.");
-      return;
-    }
-    setFormError("");
-    setLeft({ kind: "fixture", review: illustrativeReview(match, catalogModelById(baselineModelId)) });
-    setRight({ kind: "fixture", review: illustrativeReview(match, catalogModelById(adaptedModelId)) });
-  }
-
   return (
     <div className="space-y-5">
       <PageHeader
         title="Model comparison"
-        lede="The same input is prepared for the baseline selector and the LoRA selector. A fixture repeats one synthetic annotation in both columns and is not evidence that LoRA changes review quality."
-        actions={<StatusChip tone={apiReady ? "ok" : "pending"}>{apiReady ? "Gateway URL set" : "Service not connected"}</StatusChip>}
+        lede="The same input is prepared for Qwen3.5-27B and the B200 LoRA adapter. Live review of Jetson Qwen3.5:4B stays on the Code review page."
+        actions={
+          <StatusChip tone={canCompare ? "ok" : "pending"}>
+            {jetsonGateway ? "Jetson 4B gateway" : canCompare ? "Gateway ready" : "Service not connected"}
+          </StatusChip>
+        }
       />
       <section className="space-y-3">
         <ExampleSelect
@@ -103,17 +93,17 @@ export function ComparePage() {
         />
         <CodeEditor code={draft.code} readOnly={false} onChange={replaceCode} />
         <div className="flex flex-wrap gap-2">
-          <button type="button" className="btn btn-primary" disabled={!apiReady || left.kind === "loading"} onClick={() => void requestBoth()}>
+          <button type="button" className="btn btn-primary" disabled={!canCompare || left.kind === "loading"} onClick={() => void requestBoth()}>
             Request both models
           </button>
-          {demoMode ? (
-            <button type="button" className="btn" onClick={showFixture}>
-              Show illustrative fixture
-            </button>
-          ) : null}
         </div>
-        {apiReady ? null : (
-          <p className="text-sm text-mute">Request both models is disabled until the gateway URL is set.</p>
+        {jetsonGateway ? (
+          <p className="text-sm leading-6 text-mute">
+            Request both models stays disabled. This gateway serves pretrained Jetson Qwen3.5:4B. Live review of that model is on the
+            Code review page. These columns stay reserved for Qwen3.5-27B and the B200 LoRA adapter.
+          </p>
+        ) : canCompare ? null : (
+          <p className="text-sm text-mute">Request both models stays disabled until a gateway reports those models ready.</p>
         )}
         {formError.length > 0 ? <Callout tone="error">{formError}</Callout> : null}
       </section>
@@ -121,18 +111,26 @@ export function ComparePage() {
         <CompareColumn title="Base Qwen3.5-27B" modelId={catalogModelById(baselineModelId).id} state={left} code={draft.code} />
         <CompareColumn title="Fine-tuned LoRA" note="Not trained" modelId={catalogModelById(adaptedModelId).id} state={right} code={draft.code} />
       </section>
-      <DifferencePanel left={left} right={right} demoMode={demoMode} />
+      <DifferencePanel left={left} right={right} jetsonGateway={jetsonGateway} />
     </div>
   );
 }
 
-function DifferencePanel({ left, right, demoMode }: { left: ReviewPaneState; right: ReviewPaneState; demoMode: boolean }) {
+function DifferencePanel({
+  left,
+  right,
+  jetsonGateway,
+}: {
+  left: ReviewPaneState;
+  right: ReviewPaneState;
+  jetsonGateway: boolean;
+}) {
   if (left.kind === "fixture" && right.kind === "fixture") {
     return (
       <section className="panel space-y-2">
         <h2 className="text-base font-semibold">Column differences</h2>
         <p className="text-sm">
-          Both columns repeat the synthetic annotation for {left.review.exampleId}. No quality difference is claimed.
+          Both columns repeat the reference annotation for {left.review.exampleId}. No quality difference is claimed.
         </p>
         <p className="text-sm">Timing: {formatTiming(left.review.timing)}</p>
       </section>
@@ -157,9 +155,9 @@ function DifferencePanel({ left, right, demoMode }: { left: ReviewPaneState; rig
       testId="compare-empty"
       title="Awaiting evaluation"
       body={
-        demoMode
-          ? "Load an unchanged synthetic example and use Show illustrative fixture. Both columns will repeat that annotation. No quality improvement is shown."
-          : "Request both models after the gateway URL is set. No quality improvement is recorded."
+        jetsonGateway
+          ? "These columns stay empty on the Jetson gateway. Live review of Qwen3.5:4B is on the Code review page."
+          : "Request both models after a gateway reports Qwen3.5-27B and the LoRA adapter ready. No quality improvement is recorded."
       }
     />
   );
@@ -191,7 +189,7 @@ function CompareColumn({
         state={state}
         code={code}
         idleTitle="Awaiting evaluation"
-        idleBody="This column stays empty until the gateway returns a review for this selector. An illustrative fixture, when demo data is on, repeats a synthetic annotation and is not a measured improvement."
+        idleBody="This column stays empty until a gateway returns a review for Qwen3.5-27B or the B200 LoRA adapter."
       />
     </article>
   );

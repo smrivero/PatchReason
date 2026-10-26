@@ -15,6 +15,8 @@ export interface Finding {
   evidence: string;
   explanation: string;
   remediation: string;
+  title?: string;
+  line?: number;
 }
 
 export type Timing =
@@ -56,7 +58,7 @@ export interface ReviewRequest {
   filename: FilenameField;
 }
 
-export const FIXTURE_REVIEW_LABEL = "Illustrative fixture / no model inference";
+export const FIXTURE_REVIEW_LABEL = "Reference annotation";
 
 export interface IllustrativeReview {
   kind: "illustrative-fixture";
@@ -77,6 +79,11 @@ export interface ModelResponse {
   revision: string;
   findings: readonly Finding[];
   timing: Timing;
+  headline: string;
+  summary: string;
+  limitations: readonly string[];
+  vulnerable: boolean | null;
+  usage: { promptTokens: number; completionTokens: number } | null;
 }
 
 export type ReviewPaneState =
@@ -376,7 +383,12 @@ export type InferenceAvailability = "unavailable" | "ready";
 
 export interface OnlineStatus {
   gatewayVersion: string;
+  gatewayName: string;
   inference: InferenceAvailability;
+  message: string;
+  liveModelId: string | null;
+  upstreamModel: string | null;
+  loraTrained: boolean;
 }
 
 export interface LiveModel {

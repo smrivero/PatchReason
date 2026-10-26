@@ -45,7 +45,7 @@ export function RunsPage() {
     <div className="space-y-5">
       <PageHeader
         title="Training runs"
-        lede="History lists a row only after a verified recorded run is imported or returned by the gateway. The reference plan stays in the details below. Demo data does not invent a loss curve."
+        lede="History lists a row only after a verified recorded run is imported or returned by the gateway. The reference plan stays in the details below."
       />
       <section className="panel flex flex-wrap items-center gap-3">
         <label className="text-sm">

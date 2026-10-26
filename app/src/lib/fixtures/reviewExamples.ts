@@ -4,7 +4,7 @@ import { FIXTURE_REVIEW_LABEL } from "../../types/domain";
 export const reviewExamples: readonly ReviewExample[] = [
   {
     id: "ref-sql-001",
-    title: "SQL injection, synthetic, 1 reference finding",
+    title: "SQL injection",
     language: "typescript",
     filename: "ref-sql-001.ts",
     context: "HTTP endpoint interpolates a request-controlled ID into a SQL statement.",
@@ -21,7 +21,7 @@ export const reviewExamples: readonly ReviewExample[] = [
   },
   {
     id: "ref-sql-002",
-    title: "Parameterized query, synthetic, no reference finding",
+    title: "Parameterized query",
     language: "typescript",
     filename: "ref-sql-002.ts",
     context: "Database driver supports parameter binding.",
@@ -30,7 +30,7 @@ export const reviewExamples: readonly ReviewExample[] = [
   },
   {
     id: "ref-mass-001",
-    title: "Mass assignment, synthetic, 1 reference finding",
+    title: "Mass assignment",
     language: "typescript",
     filename: "ref-mass-001.ts",
     context: "Users can update their display name but must not change their role.",

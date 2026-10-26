@@ -7,7 +7,6 @@ import { usePageTitle } from "../hooks/usePageTitle";
 import { useWorkspace } from "../hooks/useWorkspace";
 import { loadGpu, readApiBase } from "../lib/api/client";
 import { downloadText } from "../lib/download";
-import { illustrativeGpuSeries } from "../lib/fixtures/gpuSeries";
 import { parseGpuCsv, serializeGpuCsv } from "../lib/parse/gpuCsv";
 import type { GpuSample, GpuSeries, RemoteGpuState } from "../types/domain";
 
@@ -29,13 +28,12 @@ function parseRunId(value: string): { kind: "ok"; value: string } | { kind: "err
 
 export function GpuPage() {
   usePageTitle("GPU telemetry");
-  const { gpuImport, setGpuImport, gpuFixtureEnabled, setGpuFixtureEnabled } = useWorkspace();
+  const { gpuImport, setGpuImport } = useWorkspace();
   const [runId, setRunId] = useState("");
   const [requestState, setRequestState] = useState<RemoteGpuState>({ kind: "idle" });
   const [windowChoice, setWindowChoice] = useState<WindowChoice>("all");
   const base = readApiBase();
-  const visible: GpuSeries | null =
-    gpuImport.kind === "series" ? gpuImport.series : gpuFixtureEnabled ? illustrativeGpuSeries() : null;
+  const visible: GpuSeries | null = gpuImport.kind === "series" ? gpuImport.series : null;
 
   async function onCsv(file: File): Promise<void> {
     const parsed = parseGpuCsv(await file.text(), file.name);
@@ -43,7 +41,6 @@ export function GpuPage() {
       setGpuImport({ kind: "error", message: parsed.message });
       return;
     }
-    setGpuFixtureEnabled(false);
     setGpuImport({ kind: "series", series: parsed.value });
   }
 
@@ -67,7 +64,6 @@ export function GpuPage() {
       setRequestState({ kind: "empty" });
       return;
     }
-    setGpuFixtureEnabled(false);
     setGpuImport({ kind: "series", series: result.value });
     setRequestState({ kind: "idle" });
   }
@@ -80,22 +76,9 @@ export function GpuPage() {
     <div className="space-y-5">
       <PageHeader
         title="GPU telemetry"
-        lede="Charts read an nvidia-smi CSV from scripts/capture_gpu_telemetry.sh or a measured gateway payload. The illustrative switch is off by default."
+        lede="Charts read an nvidia-smi CSV from scripts/capture_gpu_telemetry.sh or a measured gateway payload."
       />
       <section className="panel space-y-3">
-        <label className="flex items-start gap-2 text-sm">
-          <input
-            type="checkbox"
-            className="mt-1"
-            checked={gpuFixtureEnabled}
-            disabled={gpuImport.kind === "series"}
-            onChange={(event) => setGpuFixtureEnabled(event.target.checked)}
-          />
-          <span>
-            Show illustrative GPU fixture. Off by default. The series is synthetic and was not collected with nvidia-smi.
-            {gpuImport.kind === "series" ? " Clear the import before using the fixture." : ""}
-          </span>
-        </label>
         <label className="block text-sm">
           <span className="mb-1 block text-mute">Import gpu.csv</span>
           <input

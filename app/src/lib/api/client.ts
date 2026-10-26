@@ -12,14 +12,17 @@ import type {
   RemoteRunsState,
   ReviewRequest,
 } from "../../types/domain";
+import type { LiveReviewRequest } from "../review/validateRequest";
 import { parseEvaluationDocument } from "../parse/evaluation";
 import { parseGpuDocument } from "../parse/gpuCsv";
 import { isRecord, readString } from "../parse/guards";
 import { parseRunDocument } from "../parse/runRecord";
+import { jetsonLiveLabel, jetsonModelId } from "../models/catalog";
 import { err, ok, type ParseResult } from "../parse/result";
 import { apiPaths } from "./paths";
 
 const REQUEST_TIMEOUT_MS = 15000;
+const REVIEW_TIMEOUT_MS = 160000;
 const MAX_BODY_BYTES = 2_000_000;
 
 export function readApiBase(): ApiBase {
@@ -52,11 +55,28 @@ function createGateway(baseUrl: string): AxiosInstance {
   });
 }
 
+function readDetail(data: unknown): string | null {
+  if (!isRecord(data)) return null;
+  if (typeof data.detail === "string" && data.detail.trim().length > 0) return data.detail;
+  if (!Array.isArray(data.detail)) return null;
+  const messages: string[] = [];
+  for (const item of data.detail) {
+    if (isRecord(item) && typeof item.msg === "string" && item.msg.trim().length > 0) messages.push(item.msg);
+  }
+  return messages.length === 0 ? null : messages.join(" ");
+}
+
 function readHttpError(error: unknown): string {
   if (!axios.isAxiosError(error)) return "The request failed.";
-  if (error.code === "ECONNABORTED") return "The gateway timed out.";
+  if (error.code === "ECONNABORTED") return "The gateway timed out before Jetson inference returned.";
   const status = error.response?.status;
-  if (status === undefined) return "The gateway did not respond.";
+  const detail = readDetail(error.response?.data);
+  if (status === 409) return detail ?? "That model is not available on this gateway. Select Jetson Qwen3.5:4B.";
+  if (status === 503) return detail ?? "Ollama is unreachable. Check the SSH tunnel and that qwen3.5:4b is loaded.";
+  if (status === 504) return detail ?? "Jetson inference timed out.";
+  if (status === 502) return detail ?? "The model response was not valid structured JSON.";
+  if (detail !== null) return detail;
+  if (status === undefined) return "The gateway did not respond. Start the local FastAPI gateway and confirm the SSH tunnel.";
   return `The gateway returned HTTP ${String(status)}.`;
 }
 
@@ -80,6 +100,21 @@ async function getJson(baseUrl: string, path: string, query: Record<string, stri
 
 function parseStatus(value: unknown): ParseResult<OnlineStatus> {
   if (!isRecord(value)) return err("The status payload is not an object.");
+  if (typeof value.inference_ready === "boolean") {
+    const message = typeof value.message === "string" ? value.message : "";
+    const liveModelId = typeof value.model === "string" ? value.model : null;
+    const upstreamModel = typeof value.upstream_model === "string" ? value.upstream_model : null;
+    const gatewayName = typeof value.gateway === "string" && value.gateway.trim().length > 0 ? value.gateway : "PatchReason FastAPI";
+    return ok({
+      gatewayVersion: "fastapi",
+      gatewayName,
+      inference: value.inference_ready ? "ready" : "unavailable",
+      message,
+      liveModelId,
+      upstreamModel,
+      loraTrained: value.model_trained_with_lora === true,
+    });
+  }
   const gatewayVersion = readString(value, "gatewayVersion");
   const inference = readString(value, "inference");
   if (gatewayVersion.kind === "error") return gatewayVersion;
@@ -90,7 +125,15 @@ function parseStatus(value: unknown): ParseResult<OnlineStatus> {
   if (inference.value !== "unavailable" && inference.value !== "ready") {
     return err("inference must be unavailable or ready.");
   }
-  return ok({ gatewayVersion: gatewayVersion.value, inference: inference.value });
+  return ok({
+    gatewayVersion: gatewayVersion.value,
+    gatewayName: gatewayVersion.value,
+    inference: inference.value,
+    message: "",
+    liveModelId: null,
+    upstreamModel: null,
+    loraTrained: false,
+  });
 }
 
 function parseLiveModel(value: unknown): ParseResult<LiveModel> {
@@ -137,12 +180,40 @@ function parseLiveModel(value: unknown): ParseResult<LiveModel> {
   return err("model.availability.kind is unknown.");
 }
 
+function parseJetsonModel(value: unknown): ParseResult<LiveModel> {
+  if (!isRecord(value)) return err("A model record must be an object.");
+  const id = readString(value, "id");
+  const name = readString(value, "name");
+  const upstream = readString(value, "upstream_model");
+  const description = readString(value, "description");
+  if (id.kind === "error") return id;
+  if (name.kind === "error") return name;
+  if (upstream.kind === "error") return upstream;
+  if (description.kind === "error") return description;
+  if (typeof value.available !== "boolean") return err("model.available must be a boolean.");
+  if (typeof value.adapted !== "boolean") return err("model.adapted must be a boolean.");
+  const jetson = id.value === jetsonModelId;
+  const displayName = jetson ? "Jetson Qwen3.5:4B (pretrained)" : name.value;
+  const availability = value.available
+    ? { kind: "served" as const, endpointLabel: jetson ? "Ollama via SSH tunnel" : "Served by the gateway" }
+    : { kind: "not-deployed" as const, note: description.value };
+  return ok({
+    id: id.value,
+    displayName,
+    role: value.adapted ? "adapted" : "baseline",
+    revision: upstream.value,
+    availability,
+  });
+}
+
 function parseModels(value: unknown): ParseResult<readonly LiveModel[]> {
-  if (!Array.isArray(value)) return err("The models payload must be an array.");
-  if (value.length > 20) return err("The models payload is too large.");
+  const records = Array.isArray(value) ? value : isRecord(value) && Array.isArray(value.models) ? value.models : null;
+  if (records === null) return err("The models payload must be an array or a models object.");
+  if (records.length > 20) return err("The models payload is too large.");
+  const jetsonShape = !Array.isArray(value);
   const models: LiveModel[] = [];
-  for (const item of value) {
-    const parsed = parseLiveModel(item);
+  for (const item of records) {
+    const parsed = jetsonShape ? parseJetsonModel(item) : parseLiveModel(item);
     if (parsed.kind === "error") return parsed;
     models.push(parsed.value);
   }
@@ -169,9 +240,10 @@ const SEVERITIES = ["info", "low", "medium", "high", "critical"] as const;
 
 function parseModelResponse(value: unknown): ParseResult<ModelResponse> {
   if (!isRecord(value)) return err("The review payload is not an object.");
-  if (value.kind === "illustrative-fixture" || value.label === "Illustrative fixture / no model inference") {
+  if (value.kind === "illustrative-fixture" || value.label === "Illustrative fixture / no model inference" || value.is_demo === true) {
     return err("The gateway returned a fixture label. PatchReason will not show that as a model response.");
   }
+  if (typeof value.model_id === "string" || typeof value.latency_ms === "number") return parseJetsonReview(value);
   const modelId = readString(value, "modelId");
   const displayName = readString(value, "displayName");
   const role = readString(value, "role");
@@ -223,7 +295,84 @@ function parseModelResponse(value: unknown): ParseResult<ModelResponse> {
     revision: revision.value,
     findings,
     timing: timing.value,
+    headline: "Gateway response",
+    summary: "",
+    limitations: [],
+    vulnerable: null,
+    usage: null,
   });
+}
+
+function parseJetsonReview(value: Record<string, unknown>): ParseResult<ModelResponse> {
+  const modelId = readString(value, "model_id");
+  const modelName = readString(value, "model_name");
+  if (modelId.kind === "error") return modelId;
+  if (modelName.kind === "error") return modelName;
+  if (modelId.value !== jetsonModelId) return err("The live review did not come from jetson-qwen35-4b.");
+  if (value.mode !== "live") return err("The review mode is not live.");
+  if (typeof value.vulnerable !== "boolean") return err("vulnerable must be a boolean.");
+  const summary = readString(value, "summary");
+  if (summary.kind === "error") return summary;
+  if (!Array.isArray(value.findings)) return err("findings must be an array.");
+  if (value.findings.length > 8) return err("The review returned too many findings.");
+  const findings: Finding[] = [];
+  for (const item of value.findings) {
+    if (!isRecord(item)) return err("A finding must be an object.");
+    const title = readString(item, "title");
+    const cwe = readString(item, "cwe");
+    const severity = readString(item, "severity");
+    const explanation = readString(item, "explanation");
+    const recommendation = readString(item, "recommendation");
+    if (title.kind === "error") return title;
+    if (cwe.kind === "error") return cwe;
+    if (severity.kind === "error") return severity;
+    if (explanation.kind === "error") return explanation;
+    if (recommendation.kind === "error") return recommendation;
+    if (!/^(CWE-\d{1,5}|UNKNOWN)$/.test(cwe.value)) return err("A finding CWE must look like CWE-89 or UNKNOWN.");
+    const matchedSeverity = SEVERITIES.find((itemSeverity) => itemSeverity === severity.value);
+    if (matchedSeverity === undefined) return err("A finding severity is unknown.");
+    const finding: Finding = {
+      cwe: cwe.value,
+      severity: matchedSeverity,
+      evidence: title.value,
+      explanation: explanation.value,
+      remediation: recommendation.value,
+      title: title.value,
+    };
+    if (typeof item.line === "number" && Number.isInteger(item.line) && item.line >= 1) finding.line = item.line;
+    findings.push(finding);
+  }
+  if (typeof value.latency_ms !== "number" || !Number.isFinite(value.latency_ms) || value.latency_ms < 0 || value.latency_ms > 600_000) {
+    return err("latency_ms must be a measured duration in milliseconds.");
+  }
+  const limitations = Array.isArray(value.limitations)
+    ? value.limitations.filter((item): item is string => typeof item === "string" && item.trim().length > 0)
+    : [];
+  const usage = parseUsage(value.usage);
+  return ok({
+    kind: "model",
+    modelId: modelId.value,
+    displayName: "Jetson Qwen3.5:4B (pretrained)",
+    role: "baseline",
+    revision: modelName.value,
+    findings,
+    timing: { kind: "measured", latencyMs: value.latency_ms },
+    headline: jetsonLiveLabel,
+    summary: summary.value,
+    limitations,
+    vulnerable: value.vulnerable,
+    usage,
+  });
+}
+
+function parseUsage(value: unknown): ModelResponse["usage"] {
+  if (!isRecord(value)) return null;
+  const promptTokens = value.prompt_tokens;
+  const completionTokens = value.completion_tokens;
+  if (typeof promptTokens !== "number" || typeof completionTokens !== "number") return null;
+  if (!Number.isInteger(promptTokens) || !Number.isInteger(completionTokens)) return null;
+  if (promptTokens < 0 || completionTokens < 0 || promptTokens > 1_000_000 || completionTokens > 1_000_000) return null;
+  return { promptTokens, completionTokens };
 }
 
 function parseTiming(value: unknown): ParseResult<ModelResponse["timing"]> {
@@ -261,12 +410,39 @@ export async function postReview(baseUrl: string, request: ReviewRequest): Promi
   try {
     const response = await createGateway(baseUrl).post(apiPaths.reviews, requestBody(request), {
       headers: { "Content-Type": "application/json" },
+      timeout: REVIEW_TIMEOUT_MS,
     });
     const body: unknown = response.data;
     return parseModelResponse(body);
   } catch (error: unknown) {
     return err(readHttpError(error));
   }
+}
+
+export async function postLiveReview(
+  baseUrl: string,
+  request: LiveReviewRequest,
+  signal?: AbortSignal,
+): Promise<ParseResult<ModelResponse> | { kind: "cancelled" }> {
+  try {
+    const response = await createGateway(baseUrl).post(
+      apiPaths.reviews,
+      { code: request.code, language: request.language, model: request.model, filename: request.filename },
+      signal === undefined
+        ? { headers: { "Content-Type": "application/json" }, timeout: REVIEW_TIMEOUT_MS }
+        : { headers: { "Content-Type": "application/json" }, timeout: REVIEW_TIMEOUT_MS, signal },
+    );
+    const body: unknown = response.data;
+    return parseModelResponse(body);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && error.code === "ERR_CANCELED") return { kind: "cancelled" };
+    return err(readHttpError(error));
+  }
+}
+
+function isUncollectedPayload(body: unknown): boolean {
+  if (!isRecord(body)) return false;
+  return body.status === "pending_collection" || body.status === "not_collected" || body.status === "not_started";
 }
 
 function emptyOrDocument(body: unknown): EvaluationDocument {
@@ -277,6 +453,7 @@ function emptyOrDocument(body: unknown): EvaluationDocument {
 export async function loadEvaluation(baseUrl: string): Promise<RemoteEvaluationState> {
   const response = await getJson(baseUrl, apiPaths.evaluationSummary, null);
   if (response.kind === "error") return response;
+  if (isUncollectedPayload(response.body)) return { kind: "empty" };
   const document = emptyOrDocument(response.body);
   if (document.kind === "error") return document;
   if (document.kind === "empty") return { kind: "empty" };
@@ -286,7 +463,7 @@ export async function loadEvaluation(baseUrl: string): Promise<RemoteEvaluationS
 export async function loadRuns(baseUrl: string): Promise<RemoteRunsState> {
   const response = await getJson(baseUrl, apiPaths.runs, null);
   if (response.kind === "error") return response;
-  if (response.body === null || response.body === "") return { kind: "empty" };
+  if (response.body === null || response.body === "" || isUncollectedPayload(response.body)) return { kind: "empty" };
   const document = parseRunDocument(response.body);
   if (document.kind === "empty") return { kind: "empty" };
   if (document.kind === "error") return document;
@@ -297,6 +474,6 @@ export async function loadRuns(baseUrl: string): Promise<RemoteRunsState> {
 export async function loadGpu(baseUrl: string, runId: string): Promise<ParseResult<GpuSeries> | { kind: "empty" }> {
   const response = await getJson(baseUrl, apiPaths.gpuTelemetry, { run_id: runId });
   if (response.kind === "error") return err(response.message);
-  if (response.body === null || response.body === "") return { kind: "empty" };
+  if (response.body === null || response.body === "" || isUncollectedPayload(response.body)) return { kind: "empty" };
   return parseGpuDocument(response.body, runId);
 }

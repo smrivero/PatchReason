@@ -48,7 +48,7 @@ export function CodeEditor({
   const gutterRef = useRef<HTMLDivElement>(null);
   const highlightRef = useRef<HTMLPreElement>(null);
   const bandRef = useRef<HTMLDivElement>(null);
-  const lineCount = code.length === 0 ? 1 : code.split("\n").length;
+  const sourceLines = code.length === 0 ? [""] : code.split("\n");
   const tokens = tokenize(code);
   const marked = new Set(highlightedLines);
 
@@ -71,25 +71,22 @@ export function CodeEditor({
         aria-hidden="true"
         className="overflow-hidden border-r border-line py-3 text-right text-xs leading-6"
       >
-        {Array.from({ length: lineCount }, (_, index) => {
+        {sourceLines.map((_, index) => {
           const line = index + 1;
           const active = marked.has(line);
           return (
-            <div key={line} className={active ? "bg-amber-100 px-2 text-amber-800" : "px-2 text-slate-400"}>
+            <div key={line} className={active ? "h-6 bg-amber-100 px-2 leading-6 text-amber-800" : "h-6 px-2 leading-6 text-slate-400"}>
               {line}
             </div>
           );
         })}
       </div>
       <div className="relative min-w-0">
-        <div ref={bandRef} aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
-          {highlightedLines.map((line) => (
-            <span
-              key={line}
-              className="absolute left-0 right-0 bg-amber-100/80"
-              style={{ top: `${12 + (line - 1) * 24}px`, height: "24px" }}
-            />
-          ))}
+        <div ref={bandRef} aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden px-3 py-3">
+          {sourceLines.map((_, index) => {
+            const line = index + 1;
+            return <div key={line} className={marked.has(line) ? "h-6 bg-amber-100/80" : "h-6"} />;
+          })}
         </div>
         <pre
           ref={highlightRef}

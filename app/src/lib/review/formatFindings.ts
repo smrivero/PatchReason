@@ -1,7 +1,8 @@
 import type { Finding, Timing } from "../../types/domain";
+import { findingLineLabel, resolveFindingLine } from "./resolveFindingLine";
 
 export function formatLatency(latencyMs: number): string {
-  return `${latencyMs.toFixed(1)} ms`;
+  return `${(latencyMs / 1000).toFixed(1)} s`;
 }
 
 export function formatTiming(timing: Timing): string {
@@ -14,6 +15,7 @@ export function findingsToText(input: {
   modelId: string;
   findings: readonly Finding[];
   timing: Timing;
+  code?: string;
 }): string {
   const lines = [input.heading, `Model: ${input.modelId}`, `Timing: ${formatTiming(input.timing)}`];
   if (input.findings.length === 0) {
@@ -21,9 +23,10 @@ export function findingsToText(input: {
     return lines.join("\n");
   }
   for (const finding of input.findings) {
+    const lineLabel = input.code === undefined ? null : findingLineLabel(resolveFindingLine(input.code, finding));
     lines.push(
       "",
-      `${finding.cwe} | ${finding.severity}`,
+      `${finding.cwe} | ${finding.severity}${lineLabel === null ? "" : ` | ${lineLabel}`}`,
       `Evidence: ${finding.evidence}`,
       `Explanation: ${finding.explanation}`,
       `Remediation: ${finding.remediation}`,

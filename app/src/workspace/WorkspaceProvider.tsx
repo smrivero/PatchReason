@@ -10,24 +10,7 @@ import type {
 } from "../types/domain";
 import { WorkspaceContext, type WorkspaceValue } from "./workspace-context";
 
-const DEMO_KEY = "patchreason.demoMode";
 const DRAFT_KEY = "patchreason.draft.v1";
-
-function readStoredDemoMode(): boolean {
-  try {
-    return window.localStorage.getItem(DEMO_KEY) === "on";
-  } catch {
-    return false;
-  }
-}
-
-function writeStoredDemoMode(enabled: boolean): void {
-  try {
-    window.localStorage.setItem(DEMO_KEY, enabled ? "on" : "off");
-  } catch {
-    return;
-  }
-}
 
 function readStoredDraft(): CodeDraft {
   try {
@@ -58,19 +41,13 @@ function initialGateway(): GatewaySnapshot {
 }
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const [demoMode, setDemoModeState] = useState(readStoredDemoMode);
   const [draft, setDraftState] = useState(readStoredDraft);
   const [evaluationImport, setEvaluationImport] = useState<EvaluationImport>({ kind: "none" });
   const [gpuImport, setGpuImport] = useState<GpuImport>({ kind: "none" });
-  const [gpuFixtureEnabled, setGpuFixtureEnabled] = useState(false);
   const [runImport, setRunImport] = useState<RunImport>({ kind: "none" });
   const [gateway, setGateway] = useState<GatewaySnapshot>(initialGateway);
+  const [gatewayCheck, setGatewayCheck] = useState<"checking" | "idle">(() => (readApiBase().kind === "ready" ? "checking" : "idle"));
   const [attempt, setAttempt] = useState(0);
-
-  const setDemoMode = useCallback((enabled: boolean) => {
-    writeStoredDemoMode(enabled);
-    setDemoModeState(enabled);
-  }, []);
 
   const setDraft = useCallback((next: CodeDraft) => {
     writeStoredDraft(next);
@@ -78,6 +55,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshGateway = useCallback(() => {
+    setGatewayCheck("checking");
     setAttempt((current) => current + 1);
   }, []);
 
@@ -85,16 +63,20 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const base = readApiBase();
     if (base.kind === "unset") {
       setGateway({ kind: "unset" });
+      setGatewayCheck("idle");
       return;
     }
     if (base.kind === "invalid") {
       setGateway({ kind: "invalid", message: base.message });
+      setGatewayCheck("idle");
       return;
     }
     let cancelled = false;
-    setGateway({ kind: "loading" });
+    setGatewayCheck("checking");
     void loadGateway(base.baseUrl).then((next) => {
-      if (!cancelled) setGateway(next);
+      if (cancelled) return;
+      setGateway(next);
+      setGatewayCheck("idle");
     });
     return () => {
       cancelled = true;
@@ -103,33 +85,19 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<WorkspaceValue>(
     () => ({
-      demoMode,
-      setDemoMode,
       draft,
       setDraft,
       evaluationImport,
       setEvaluationImport,
       gpuImport,
       setGpuImport,
-      gpuFixtureEnabled,
-      setGpuFixtureEnabled,
       runImport,
       setRunImport,
       gateway,
+      gatewayCheck,
       refreshGateway,
     }),
-    [
-      demoMode,
-      setDemoMode,
-      draft,
-      setDraft,
-      evaluationImport,
-      gpuImport,
-      gpuFixtureEnabled,
-      runImport,
-      gateway,
-      refreshGateway,
-    ],
+    [draft, setDraft, evaluationImport, gpuImport, runImport, gateway, gatewayCheck, refreshGateway],
   );
 
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;

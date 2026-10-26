@@ -4,6 +4,9 @@ import { err, ok, type ParseResult } from "../parse/result";
 type BaselineModelId = "Qwen/Qwen3.5-27B" & { readonly __brand: "ModelId" };
 type AdaptedModelId = "Qwen/Qwen3.5-27B+lora" & { readonly __brand: "ModelId" };
 
+export const jetsonModelId = "jetson-qwen35-4b";
+export const jetsonLiveLabel = "Live inference · Jetson Qwen3.5:4B (pretrained)";
+
 export const baselineModelId = "Qwen/Qwen3.5-27B" as BaselineModelId;
 export const adaptedModelId = "Qwen/Qwen3.5-27B+lora" as AdaptedModelId;
 

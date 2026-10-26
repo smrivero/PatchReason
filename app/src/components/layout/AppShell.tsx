@@ -12,8 +12,6 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { NavLink } from "react-router-dom";
-import { useWorkspace } from "../../hooks/useWorkspace";
-import { DemoBanner, DemoToggle } from "./DemoBanner";
 
 interface NavItem {
   to: string;
@@ -73,8 +71,6 @@ function Brand() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { demoMode, setDemoMode } = useWorkspace();
-
   return (
     <div className="min-h-screen bg-ink text-paper">
       <a
@@ -83,25 +79,16 @@ export function AppShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      {demoMode ? <DemoBanner /> : null}
       <div className="md:grid md:min-h-screen md:grid-cols-[248px_minmax(0,1fr)]">
-        <aside className="hidden border-r border-line bg-white md:flex md:flex-col md:justify-between md:px-3 md:py-5">
-          <div>
-            <Brand />
-            <nav aria-label="Primary" className="mt-6">
-              <NavLinks />
-            </nav>
-          </div>
-          <DemoToggle pressed={demoMode} onToggle={() => setDemoMode(!demoMode)} />
+        <aside className="hidden border-r border-line bg-white md:flex md:flex-col md:px-3 md:py-5">
+          <Brand />
+          <nav aria-label="Primary" className="mt-6">
+            <NavLinks />
+          </nav>
         </aside>
         <div className="min-w-0">
           <div className="border-b border-line bg-white px-4 py-3 md:hidden">
-            <div className="flex items-center justify-between gap-3">
-              <Brand />
-            </div>
-            <div className="mt-3">
-              <DemoToggle pressed={demoMode} onToggle={() => setDemoMode(!demoMode)} />
-            </div>
+            <Brand />
             <nav aria-label="Primary" className="mt-3">
               <NavLinks />
             </nav>

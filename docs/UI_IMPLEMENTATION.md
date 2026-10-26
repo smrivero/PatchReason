@@ -9,7 +9,7 @@ The PatchReason web UI lives in `app/`. It is a Vite, React, and TypeScript inte
 | Path | Screen | Default state |
 | --- | --- | --- |
 | `/` | Overview | Original selection and 2,048-token budget counts, pipeline status, label chart |
-| `/review` | Code review | Editor. Illustrative samples are labeled fixtures. Review code stays disabled until a gateway URL is set |
+| `/review` | Code review | Editor. Sample code is labeled as a reference annotation. Review code posts to the FastAPI gateway when Jetson Qwen3.5:4B is ready |
 | `/compare` | Baseline and LoRA columns | Same input. Empty state `Awaiting evaluation` |
 | `/evaluation` | Scores and confusion matrix | `No scored evaluation results available` |
 | `/gpu` | Utilization, memory, power, temperature, throughput | Empty. Illustrative switch off. Throughput stays unmeasured |
@@ -25,7 +25,7 @@ The default theme is light. The page background is `#F7F9FC`, cards are white, t
 
 Long methodological limits live on the methodology page. The overview states training has not started once, on the LoRA card. Label and license review uses a readable label. Internal enum strings stay in the intake details.
 
-The code editor is a monospace textarea with a line gutter, a light token overlay drawn as React text nodes, and amber bands on lines matched from a finding's evidence text. That keeps Monaco out of the bundle. Choosing an unchanged reference example shows the illustrative review without a gateway. The label remains `Illustrative fixture / no model inference`. Review code still posts to the gateway and does not invent a model response. The app does not inject review text or model text as HTML.
+The code editor is a monospace textarea with a line gutter, a light token overlay drawn as React text nodes, and amber bands on the source line that supports a finding. A model line that does not match the source is kept in the finding text and is not painted on an unrelated line. That keeps Monaco out of the bundle. Sample code can show a reference annotation labeled separately from Jetson output. Review code posts to `/api/reviews`. While the request runs, the page shows a spinner, elapsed seconds, and Cancel review. Results and errors stay on screen until the next review or Clear results. Measured latency is shown in seconds with one decimal place. The connected label is `Live inference · Jetson Qwen3.5:4B (pretrained)`. The app does not inject review text or model text as HTML.
 
 Charts use Recharts with animation off, so a screenshot does not catch a half-drawn line. The overview chart groups vulnerable and safe counts by the original train, validation, and held-out partitions. The token-budget retained counts come from `results/data_intake/sequence_budget_2048.json`. Ratio charts use a 0 to 100 axis. CWE count charts scale to the largest count in that file. GPU throughput has a reserved card and no derived number.
 
@@ -46,32 +46,22 @@ The binary manifest supplies the original selected train, validation, and held-o
 
 The candidate summary and the earlier intake audit stay on separate cards so their row counts are not merged. Upstream CWE tallies are not drawn as an evaluation chart.
 
-`datasets/reference_examples.jsonl` supplies three synthetic snippets for the editor. On Code review, an unchanged example shows its reference findings without demo data, under the fixture label. Comparison still repeats that annotation in both columns only while demo data is on.
+`datasets/reference_examples.jsonl` supplies three sample snippets for the editor. On Code review they are labeled Sample code. Showing a reference annotation does not present it as model output, and it does not replace a Jetson review already on screen.
 
-No screen invents latency, F1, loss, or GPU samples in the default state. Those slots say `Pending collection` or the empty sentence required for evaluation.
-
-## Demo data
-
-The sidebar switch stores `patchreason.demoMode` as `on` or `off` in `localStorage`. The default is off. While it is on, the banner is visible on every route.
-
-Code review shows an illustrative review for an unchanged reference example without demo data. Demo data unlocks the same fixture on comparison. Both comparison columns then repeat one synthetic annotation. The page says that this is not evidence about LoRA.
-
-The GPU page has a second switch, **Show illustrative GPU fixture**. It is not stored, and it starts off on each load. Its series is named `Fixture GPU, not collected`. A loaded CSV hides that switch's effect until the import is cleared.
-
-Training runs do not grow a fixture curve in demo mode.
+No screen invents F1, loss, or GPU samples. Empty slots say `Pending collection` or the empty sentence required for evaluation. A completed review shows the gateway latency in seconds.
 
 ## API contracts
 
-`src/lib/api/paths.ts` holds the paths. `src/lib/api/client.ts` calls them with axios when `VITE_API_BASE_URL` is a credential-free `http` or `https` URL. A 404 on the evaluation, run, and telemetry reads is treated as an empty result.
+`src/lib/api/paths.ts` holds the paths. `src/lib/api/client.ts` calls them with axios when `VITE_API_BASE_URL` is a credential-free `http` or `https` URL. The local Jetson gateway is `http://127.0.0.1:8000`. A 404 on the evaluation, run, and telemetry reads is treated as an empty result. Payloads whose `status` is `pending_collection`, `not_collected`, or `not_started` are also empty, so connecting the Jetson gateway does not fill those screens with parse errors.
 
 | Method | Path | Body or query | Accepted payload |
 | --- | --- | --- | --- |
-| GET | `/api/status` | none | `gatewayVersion`, `inference` of `ready` or `unavailable` |
-| GET | `/api/models` | none | Array of id, display name, role, revision, availability |
-| POST | `/api/reviews` | `code`, `language`, `modelId`, optional `filename` | Findings plus `timing` of `not-measured` or `measured` with `latencyMs` |
-| GET | `/api/evaluations/summary` | none | `patchreason.evaluation.v1`, `patchreason.evaluation.cases.v1`, or `{ "kind": "empty" }` |
-| GET | `/api/gpu/telemetry` | `run_id` | `patchreason.gpu.v1` with `collection: "measured"`, or `{ "kind": "empty" }` |
-| GET | `/api/runs` | none | `patchreason.run.v1`, or `{ "kind": "empty" }` |
+| GET | `/api/status` | none | Jetson fields `inference_ready`, `gateway`, `model`, `upstream_model`, `model_trained_with_lora`, `message`, or the older `gatewayVersion` plus `inference` of `ready` or `unavailable` |
+| GET | `/api/models` | none | `{ default_model, models: [{ id, name, upstream_model, description, available, adapted }] }`, or the older array of id, display name, role, revision, and availability |
+| POST | `/api/reviews` | Live body `code`, `language`, `model` `jetson-qwen35-4b`, `filename` null or a basename. The older body still sends `modelId` for a non-Jetson gateway | Jetson review with `model_id`, `mode` `live`, `vulnerable`, `summary`, findings (`title`, `severity`, `cwe`, `line`, `explanation`, `recommendation`), `latency_ms`, `usage`, `limitations`. Older reviews still use `modelId`, `timing`, `evidence`, and `remediation` |
+| GET | `/api/evaluations/summary` | none | `patchreason.evaluation.v1`, `patchreason.evaluation.cases.v1`, `{ "kind": "empty" }`, or `{ "status": "pending_collection" }` |
+| GET | `/api/gpu/telemetry` | `run_id` | `patchreason.gpu.v1` with `collection: "measured"`, `{ "kind": "empty" }`, or `{ "status": "not_collected" }` |
+| GET | `/api/runs` | none | `patchreason.run.v1`, `{ "kind": "empty" }`, or `{ "status": "not_started" }` |
 
 A review payload that carries the fixture label is rejected. A served model may include `endpointLabel` as a short name. URLs in that field are rejected so the browser does not render a host address from the gateway.
 
@@ -85,16 +75,16 @@ Case files use `expected` and `predicted` values of `vulnerable` or `safe`, and 
 
 ## Current limits
 
-- No gateway is implemented under `api/`. The README there still describes a planned Python service.
+- `api/main.py` is the local FastAPI gateway for Jetson Qwen3.5:4B (`jetson-qwen35-4b`, Ollama model `qwen3.5:4b`). Review code stays disabled until `GET /api/status` reports that model ready. The comparison page does not send Qwen3.5-27B or the LoRA id to this gateway.
 - No LoRA checkpoint, container digest, or B200 session is on disk.
-- The single-GPU NeMo file is still unwritten. `configs/nemo/README.md` is unchanged.
+- The B200 LoRA candidate is `config/nemo/qwen35_27b_b200_lora_candidate.yaml`. GPU runtime validation has not run, and training has not started.
 - Label review and license review for the pinned `sijjeel/js-vuln-dataset` revision are still pending. The manifest field `training_admission` is shown as stored.
-- Imported JSON and CSV live in memory for the browser tab. A refresh clears them. Demo mode survives a refresh. The GPU fixture does not.
+- Imported JSON and CSV live in memory for the browser tab. A refresh clears them. A review result stays until the next review or Clear results.
 - The UI does not open `.nsys-rep` files.
 
 ## B200 integration
 
-When a host is rented, keep vLLM behind the gateway. Point `VITE_API_BASE_URL` at that gateway through an SSH tunnel or an authenticated proxy.
+The current gateway serves the pretrained Jetson 4B model. When a B200 host is rented, keep that runtime behind its own gateway. Point `VITE_API_BASE_URL` at that gateway through an SSH tunnel or an authenticated proxy. Do not describe a Jetson Qwen3.5:4B response as B200, NeMo LoRA, or Qwen3.5-27B inference.
 
 Collect telemetry with:
 

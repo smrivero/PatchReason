@@ -5,7 +5,7 @@ export function ExampleSelect({ onSelect }: { onSelect: (example: ReviewExample)
   return (
     <div>
       <p id="sample-label" className="mb-2 text-xs font-medium text-mute">
-        Illustrative samples
+        Sample code
       </p>
       <div role="group" aria-labelledby="sample-label" className="flex flex-wrap gap-2">
         {reviewExamples.map((example) => (
@@ -15,7 +15,7 @@ export function ExampleSelect({ onSelect }: { onSelect: (example: ReviewExample)
         ))}
       </div>
       <p className="mt-2 text-xs text-mute">
-        Taken from datasets/reference_examples.jsonl. Loading a sample fills the editor and shows its reference annotation. That annotation is not a model finding.
+        Sample code from the reference set. Loading a sample fills the editor. Its reference annotation is separate from model findings.
       </p>
     </div>
   );

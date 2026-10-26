@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { datasetFacts } from "../lib/parse/facts";
 import { formatCount, readableStatus } from "../lib/format";
-import { catalogModels } from "../lib/models/catalog";
+import { catalogModels, jetsonLiveLabel, jetsonModelId } from "../lib/models/catalog";
 import { usePageTitle } from "../hooks/usePageTitle";
 import { useWorkspace } from "../hooks/useWorkspace";
 import { PartitionBars } from "../components/charts/SimpleCharts";
@@ -136,7 +136,7 @@ export function OverviewPage() {
           <PipelineCard
             index={3}
             title="Code review"
-            body="Illustrative samples stay labeled as fixtures. A gateway response replaces them only after Review code runs."
+            body="Sample code stays labeled as a reference annotation. A Jetson response appears only after Review code runs."
           />
         </ol>
       </section>
@@ -290,20 +290,36 @@ function GatewayCopy() {
   const { gateway } = useWorkspace();
   switch (gateway.kind) {
     case "unset":
-      return <p className="text-sm">VITE_API_BASE_URL is empty. The UI is running without a gateway.</p>;
+      return (
+        <p className="text-sm leading-6">
+          VITE_API_BASE_URL is empty. Set it to http://127.0.0.1:8000 and start the local FastAPI gateway. The browser talks only to
+          that gateway. Ollama stays behind the Mac SSH tunnel.
+        </p>
+      );
     case "invalid":
       return <Callout tone="error">{gateway.message}</Callout>;
     case "loading":
       return <p className="text-sm">Checking gateway.</p>;
     case "offline":
       return <Callout tone="error">{gateway.message}</Callout>;
-    case "online":
+    case "online": {
+      const pretrainedJetson =
+        gateway.status.liveModelId === jetsonModelId &&
+        gateway.status.loraTrained === false &&
+        gateway.status.inference === "ready";
       return (
         <div className="space-y-2 text-sm">
           <p>
-            Gateway {gateway.status.gatewayVersion}. Inference {gateway.status.inference}.
+            {pretrainedJetson
+              ? jetsonLiveLabel
+              : `${gateway.status.gatewayName}. Inference ${gateway.status.inference}.`}
             {gateway.models.kind === "error" ? ` Models: ${gateway.models.message}` : ""}
           </p>
+          {gateway.status.upstreamModel === null ? null : <p className="text-mute">Upstream model {gateway.status.upstreamModel}.</p>}
+          {gateway.status.message.length > 0 ? <p>{gateway.status.message}</p> : null}
+          {pretrainedJetson ? (
+            <p className="text-mute">The B200 LoRA candidate remains on the pipeline card. Training has not started.</p>
+          ) : null}
           {gateway.models.kind === "ready" ? (
             <ul className="space-y-2">
               {gateway.models.models.map((model) => (
@@ -316,6 +332,7 @@ function GatewayCopy() {
           ) : null}
         </div>
       );
+    }
     default: {
       const exhaustive: never = gateway;
       return exhaustive;
