@@ -1,0 +1,74 @@
+{
+  "project": "PatchReason",
+  "source": "https://huggingface.co/datasets/sijjeel/js-vuln-dataset",
+  "source_revision": "7f36e5e1f0868d963c109acae5db4b094950675b",
+  "created_at_utc": "2026-10-26T16:34:52.104123+00:00",
+  "source_counts": {
+    "train": 6990,
+    "validation": 1498,
+    "test": 1499
+  },
+  "after_structural_filters": {
+    "train": 6902,
+    "validation": 1475,
+    "test": 1472
+  },
+  "excluded": {
+    "train": {
+      "over_character_limit": 71,
+      "too_short": 17
+    },
+    "validation": {
+      "over_character_limit": 12,
+      "too_short": 11
+    },
+    "test": {
+      "over_character_limit": 19,
+      "too_short": 8
+    }
+  },
+  "selected_counts": {
+    "test": 200,
+    "validation": 200,
+    "train": 1500
+  },
+  "labels": {
+    "test": {
+      "vulnerable": 100,
+      "safe": 100
+    },
+    "validation": {
+      "vulnerable": 100,
+      "safe": 100
+    },
+    "train": {
+      "vulnerable": 750,
+      "safe": 750
+    }
+  },
+  "duplicates_across_selected_partitions": 0,
+  "duplicate_candidates_skipped": {
+    "test": {},
+    "validation": {},
+    "train": {
+      "previously_selected_duplicate": 3
+    }
+  },
+  "private_files_sha256": {
+    "train": "837a7260455a1a293a5af56e9b3e1086e422e651ce47f110e2a0729843608153",
+    "validation": "980a2eefc74f626b0bba288009f9ef8c7c9976cd850bae41b2d608cf274c8f26",
+    "test": "9066f23463e0ecac2900e30b97bceb824ee81e401df52eff74c70f19a90d50a9"
+  },
+  "sampling": "Deterministic hash ordering, balanced by source label; original source partitions respected.",
+  "training_admission": "pending_label_spot_review_and_license_review",
+  "limitations": [
+    "Binary labels only; no CWE classification, severity, or fix labels are present.",
+    "Upstream labels not individually verified by PatchReason.",
+    "Original data derived from CVEfixes; overlapping CVEfixes examples must never cross training/evaluation partitions.",
+    "Exact whitespace-normalized duplicate controls do not detect semantic near duplicates.",
+    "Foundation model pretraining overlap cannot be excluded.",
+    "Balanced classes do not represent real-world prevalence.",
+    "Public code origin and per-repository redistribution/training rights remain to be reviewed.",
+    "Training the classifier does not establish security code-review performance."
+  ]
+}

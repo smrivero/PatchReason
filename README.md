@@ -133,3 +133,5 @@ claimed until their provenance and annotation status have been verified.
 [PatchReason CWE Scope Review](docs/CWE_SCOPE_REVIEW.md) documents how public JavaScript/TypeScript security changes are screened across CWE categories, with reproducible reports and human-review gates. The dataset intake is not automatically approved for model adaptation.
 
 - [Security candidate review and coverage](docs/CANDIDATE_REVIEW.md)
+
+- [Binary vulnerability data pipeline](docs/BINARY_DATASET_PIPELINE.md)
