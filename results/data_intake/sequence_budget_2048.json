@@ -1,0 +1,48 @@
+{
+  "project": "PatchReason",
+  "model": "Qwen/Qwen3.5-27B",
+  "tokenizer_commit": "fc05daec18b0a78c049392ed2e771dde82bdf654",
+  "max_sequence_tokens": 2048,
+  "includes_chat_template_and_response": true,
+  "held_out_test_inspected": false,
+  "training_admission": "pending_label_spot_review_and_license_review",
+  "source_revision": "7f36e5e1f0868d963c109acae5db4b094950675b",
+  "splits": {
+    "train": {
+      "original": 4000,
+      "retained": 3953,
+      "excluded_over_2048": 47,
+      "retained_labels": {
+        "vulnerable": 1974,
+        "safe": 1979
+      },
+      "excluded_labels": {
+        "vulnerable": 26,
+        "safe": 21
+      },
+      "source_sha256": "e3beeb3df5ae198282bcc815e81a0f4798053b598625670754db5727a1936387",
+      "output_sha256": "0e8480af0aa0242c4018fb631a4af27dbf1cc619b49d69df6d71285713165b4d"
+    },
+    "validation": {
+      "original": 300,
+      "retained": 294,
+      "excluded_over_2048": 6,
+      "retained_labels": {
+        "vulnerable": 146,
+        "safe": 148
+      },
+      "excluded_labels": {
+        "vulnerable": 4,
+        "safe": 2
+      },
+      "source_sha256": "c87d25fc11251bc7a092e6d2edfdb2226be39ae0eba8a0a01890a58b5a4f686e",
+      "output_sha256": "c82fd10b9e3e17f9fd7bb4aab0e67b9e9dab33f75f3adc13be1b959b86981504"
+    }
+  },
+  "limitations": [
+    "Source labels and code licenses are pending review.",
+    "Text-only token lengths do not establish VLM GPU memory use.",
+    "Long sequences are excluded rather than truncated.",
+    "Length filtering can change class proportions."
+  ]
+}

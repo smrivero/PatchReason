@@ -1,0 +1,109 @@
+{
+  "project": "PatchReason",
+  "model_tokenizer": "Qwen/Qwen3.5-27B",
+  "model_revision_resolved": null,
+  "generated_at_utc": "2026-10-26T17:34:27.129887+00:00",
+  "includes_held_out_test": false,
+  "splits": {
+    "train": {
+      "all": {
+        "count": 4000,
+        "mean": 364.96,
+        "p50": 247,
+        "p90": 628,
+        "p95": 934,
+        "p99": 2129,
+        "max": 6283,
+        "would_exceed_sequence_limit": {
+          "512": 584,
+          "1024": 173,
+          "2048": 47,
+          "4096": 4
+        }
+      },
+      "vulnerable": {
+        "count": 2000,
+        "mean": 397.0,
+        "p50": 290,
+        "p90": 656,
+        "p95": 990,
+        "p99": 2206,
+        "max": 5976,
+        "would_exceed_sequence_limit": {
+          "512": 331,
+          "1024": 96,
+          "2048": 26,
+          "4096": 2
+        }
+      },
+      "safe": {
+        "count": 2000,
+        "mean": 332.91,
+        "p50": 228,
+        "p90": 583,
+        "p95": 867,
+        "p99": 2073,
+        "max": 6283,
+        "would_exceed_sequence_limit": {
+          "512": 253,
+          "1024": 77,
+          "2048": 21,
+          "4096": 2
+        }
+      }
+    },
+    "validation": {
+      "all": {
+        "count": 300,
+        "mean": 399.73,
+        "p50": 245,
+        "p90": 742,
+        "p95": 1037,
+        "p99": 2897,
+        "max": 3324,
+        "would_exceed_sequence_limit": {
+          "512": 55,
+          "1024": 16,
+          "2048": 6,
+          "4096": 0
+        }
+      },
+      "vulnerable": {
+        "count": 150,
+        "mean": 439.51,
+        "p50": 317,
+        "p90": 746,
+        "p95": 1353,
+        "p99": 2897,
+        "max": 3128,
+        "would_exceed_sequence_limit": {
+          "512": 30,
+          "1024": 9,
+          "2048": 4,
+          "4096": 0
+        }
+      },
+      "safe": {
+        "count": 150,
+        "mean": 359.95,
+        "p50": 221,
+        "p90": 652,
+        "p95": 950,
+        "p99": 3124,
+        "max": 3324,
+        "would_exceed_sequence_limit": {
+          "512": 25,
+          "1024": 7,
+          "2048": 2,
+          "4096": 0
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Token counts include the complete chat template.",
+    "Single-GPU LoRA memory compatibility is not established.",
+    "Upstream label quality and source licenses remain pending.",
+    "The held-out test partition was not inspected."
+  ]
+}
