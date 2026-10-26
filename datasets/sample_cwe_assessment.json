@@ -1,0 +1,137 @@
+{
+  "project": "PatchReason",
+  "review_scope": "one representative excerpt for each of 14 CWE categories",
+  "source_document": "cwe_examples.md (user-provided file; 2026-10-26)",
+  "scope_note": "These 14 entries are examples selected from a 71-candidate intake. Findings must not be extrapolated to all 71 candidates.",
+  "validation_state": "preliminary_diff_review",
+  "approved_for_training": 0,
+  "source_verification": "GitHub pull-request origin and full historical context have not been independently validated for every row; no source is automatically approved or deleted.",
+  "entries": [
+    {
+      "cwe": "CWE-22",
+      "label": "Path Traversal",
+      "repository": "n8n-io/n8n",
+      "source_url": "https://github.com/n8n-io/n8n/pull/18889",
+      "status": "hold_unsupported_label",
+      "reason": "SSH path normalization, escaping and private-key file permissions are shown; the excerpt does not establish a path traversal defect.",
+      "files_in_excerpt": 4
+    },
+    {
+      "cwe": "CWE-78",
+      "label": "OS Command Injection",
+      "repository": "jeffcaldwellca/mkcertWeb",
+      "source_url": "https://github.com/jeffcaldwellca/mkcertWeb/pull/19",
+      "status": "review_source",
+      "reason": "A shell-command allowlist was introduced before exec(); potential command-injection mitigation, but command sources and bypass conditions require verification.",
+      "files_in_excerpt": 1
+    },
+    {
+      "cwe": "CWE-79",
+      "label": "Cross-Site Scripting (XSS)",
+      "repository": "JU-DEV-Bootcamps/ERAS-FE",
+      "source_url": "https://github.com/JU-DEV-Bootcamps/ERAS-FE/pull/159",
+      "status": "hold_unsupported_label",
+      "reason": "ApexCharts tooltip formatting was changed to interpolate labels into HTML. The excerpt does not show XSS remediation; direct interpolation may create an HTML-injection risk.",
+      "files_in_excerpt": 3
+    },
+    {
+      "cwe": "CWE-89",
+      "label": "SQL Injection",
+      "repository": "Ali-Khan04/complaint-management-system",
+      "source_url": "https://github.com/Ali-Khan04/complaint-management-system/pull/1",
+      "status": "hold_unsupported_label",
+      "reason": "A broad migration from parameterized MSSQL requests to Sequelize is visible. The removed requests already use bound parameters; a specific SQL-injection fix is not established.",
+      "files_in_excerpt": 28
+    },
+    {
+      "cwe": "CWE-94",
+      "label": "Code Injection",
+      "repository": "akaday/react",
+      "source_url": "https://github.com/akaday/react/pull/20",
+      "status": "review_source",
+      "reason": "Dynamically generated inline JavaScript imports were replaced by script.src assignment. This may reduce code-construction risk, but trust boundaries for src remain unknown.",
+      "files_in_excerpt": 1
+    },
+    {
+      "cwe": "CWE-287",
+      "label": "Improper Authentication",
+      "repository": "govuk-one-login/ipv-cri-check-hmrc-front",
+      "source_url": "https://github.com/govuk-one-login/ipv-cri-check-hmrc-front/pull/356",
+      "status": "review_source",
+      "reason": "A middleware requiring expected session fields was added to a route. The change plausibly addresses an authentication workflow gap, subject to confirmation of the original risk and middleware placement.",
+      "files_in_excerpt": 5
+    },
+    {
+      "cwe": "CWE-306",
+      "label": "Missing Authentication for Critical Function",
+      "repository": "pra719/final-repo",
+      "source_url": "https://github.com/pra719/final-repo/pull/3",
+      "status": "review_source",
+      "reason": "The client switched from plain axios to a configured axiosInstance. Authentication effects depend on the axiosInstance implementation and the server-side authorization policy, neither shown.",
+      "files_in_excerpt": 2
+    },
+    {
+      "cwe": "CWE-352",
+      "label": "Cross-Site Request Forgery (CSRF)",
+      "repository": "PhotonEntangled/LoadUp",
+      "source_url": "https://github.com/PhotonEntangled/LoadUp/pull/2",
+      "status": "review_source",
+      "reason": "CSRF middleware was introduced for routes outside /api. Applicability to affected state-changing cookie-authenticated routes must be confirmed; API routes are exempted.",
+      "files_in_excerpt": 3
+    },
+    {
+      "cwe": "CWE-434",
+      "label": "Unrestricted Upload of File with Dangerous Type",
+      "repository": "Planning-Inspectorate/appeals-back-office",
+      "source_url": "https://github.com/Planning-Inspectorate/appeals-back-office/pull/1437",
+      "status": "hold_unsupported_label",
+      "reason": "Browser-side file type recognition now falls back to a filename extension. This alone does not demonstrate server-side upload restrictions or remediation of dangerous file upload.",
+      "files_in_excerpt": 2
+    },
+    {
+      "cwe": "CWE-611",
+      "label": "Improper Restriction of XML External Entity Reference (XXE)",
+      "repository": "zdavatz/amiko-web",
+      "source_url": "https://github.com/zdavatz/amiko-web/pull/133",
+      "status": "hold_unsupported_label",
+      "reason": "Prescription JSON/IndexedDB import refactor contains no identifiable XML external entity configuration or XXE mitigation.",
+      "files_in_excerpt": 2
+    },
+    {
+      "cwe": "CWE-798",
+      "label": "Use of Hard-coded Credentials",
+      "repository": "Planning-Inspectorate/appeals-back-office",
+      "source_url": "https://github.com/Planning-Inspectorate/appeals-back-office/pull/54",
+      "status": "hold_unsupported_label",
+      "reason": "Dynamic innerHTML construction was replaced by DOM creation and textContent; this resembles output-encoding/XSS mitigation, not removal of hard-coded credentials.",
+      "files_in_excerpt": 3
+    },
+    {
+      "cwe": "CWE-862",
+      "label": "Missing Authorization",
+      "repository": "hashicorp/boundary-ui",
+      "source_url": "https://github.com/hashicorp/boundary-ui/pull/3013",
+      "status": "hold_unsupported_label",
+      "reason": "A frontend component dispatches to credential-library form types. No enforcement of an authorization check is visible.",
+      "files_in_excerpt": 1
+    },
+    {
+      "cwe": "CWE-863",
+      "label": "Incorrect Authorization",
+      "repository": "Resgrid/Core",
+      "source_url": "https://github.com/Resgrid/Core/pull/152",
+      "status": "review_source",
+      "reason": "Role-management UI uses a corrected permission type identifier for View Group Users. May fix incorrect mapping, but backend enforcement and the original permission defect must be verified.",
+      "files_in_excerpt": 1
+    },
+    {
+      "cwe": "CWE-918",
+      "label": "Server-Side Request Forgery (SSRF)",
+      "repository": "airqo-platform/AirQo-api",
+      "source_url": "https://github.com/airqo-platform/AirQo-api/pull/4856",
+      "status": "hold_unsupported_label",
+      "reason": "URL validation limits protocol, form, and length, but does not establish defenses against loopback/private networks, DNS rebinding, or server-side URL fetches. Not an evidenced SSRF correction.",
+      "files_in_excerpt": 3
+    }
+  ]
+}
