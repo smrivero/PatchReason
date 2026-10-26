@@ -32,7 +32,7 @@ Out of scope initially: automated merges, production deployment, guaranteed vuln
 | Evaluation | [Promptfoo](https://www.promptfoo.dev/docs/) + custom metrics | Design stage |
 | GPU profiling | [NVIDIA Nsight Systems](https://developer.nvidia.com/nsight-systems) | Planned |
 | API | Python | Planned |
-| Frontend | React | Planned |
+| Frontend | React, Vite, TypeScript | Local UI in `app/`. No production deployment |
 
 **Important compatibility gate:** NVIDIA's published Qwen3.5-27B NeMo AutoModel recipe uses a distributed topology (`tp_size=4`, `pp_size=4`, two nodes). This is **not** a validated single-B200 LoRA configuration. We must derive and verify an appropriate single-GPU recipe before production training. Do not claim this as working yet.
 
@@ -57,7 +57,7 @@ flowchart LR
 
 ```text
 api/                  HTTP service (planned)
-app/                  React comparison interface (planned)
+app/                  React comparison interface (local Vite app)
 configs/nemo/         Versioned NeMo configuration work
 configs/promptfoo/    Evaluation provider configuration
 datasets/             Data contract and synthetic reference examples
@@ -75,6 +75,17 @@ No GPU and no third-party Python packages are required for the initial dataset v
 cd PatchReason
 python3 scripts/validate_dataset.py datasets/reference_examples.jsonl
 ```
+
+The local web UI is in `app/`. It does not need a model server:
+
+```bash
+cd app
+npm install
+npm run check
+npm run dev
+```
+
+See [app/README.md](app/README.md).
 
 When curated examples and source provenance are ready, version dataset manifests while keeping private code, credentials, downloaded model weights and large generated artifacts outside Git.
 
@@ -100,6 +111,7 @@ The optimized-prompt baseline and LoRA model will use **identical held-out items
 - [Dataset specification](datasets/README.md)
 - [Evaluation protocol](docs/EVALUATION_PLAN.md)
 - [Vast.ai and NVIDIA deployment readiness](docs/DEPLOYMENT.md)
+- [Web UI implementation](docs/UI_IMPLEMENTATION.md)
 
 ## Official references
 

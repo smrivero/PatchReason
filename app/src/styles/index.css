@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f7f9fc;
+  color: #172033;
+  font-family: ui-sans-serif, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+code,
+pre,
+textarea,
+.mono {
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border border-line bg-panel p-4 shadow-card;
+  }
+
+  .field {
+    @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-paper transition-colors duration-150 placeholder:text-slate-400 hover:border-slate-300;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white px-3 py-2 text-sm font-medium text-paper shadow-sm transition duration-150 hover:border-slate-300 hover:bg-panelRaised disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-primary {
+    @apply border-transparent bg-accent text-white hover:bg-[#4338CA] hover:text-white;
+  }
+
+  .eyebrow {
+    @apply text-xs font-medium text-mute;
+  }
+}
