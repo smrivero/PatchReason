@@ -62,4 +62,3 @@ or sensitive code unless you control the destination and have permission.
 Model-produced vulnerability findings need manual verification. The source
 security-classification dataset does not train the model used here.
 
-For frontend wiring, use `docs/CURSOR_JETSON_API_PROMPT.md`.
