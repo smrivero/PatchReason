@@ -1,0 +1,95 @@
+# PatchReason: synthetic-data GPU compatibility configuration.
+# Not a completed fine-tuning run or performance evaluation.
+recipe: FinetuneRecipeForVLM
+step_scheduler:
+  global_batch_size: 1
+  local_batch_size: 1
+  ckpt_every_steps: 1000
+  val_every_steps: 1000
+  max_steps: 2
+dist_env:
+  backend: nccl
+  timeout_minutes: 15
+rng:
+  _target_: nemo_automodel.components.training.rng.StatefulRNG
+  seed: 1234
+  ranked: true
+model:
+  _target_: nemo_automodel.NeMoAutoModelForImageTextToText.from_pretrained
+  pretrained_model_name_or_path: Qwen/Qwen3.5-27B
+  torch_dtype: torch.bfloat16
+  backend:
+    _target_: nemo_automodel.components.models.common.BackendConfig
+    attn: sdpa
+    linear: torch
+    rms_norm: torch
+    rope_fusion: false
+  attn_implementation: sdpa
+processor:
+  _target_: transformers.AutoProcessor.from_pretrained
+  pretrained_model_name_or_path: Qwen/Qwen3.5-27B
+peft:
+  _target_: nemo_automodel.components._peft.lora.PeftConfig
+  match_all_linear: false
+  target_modules:
+  - '*q_proj'
+  - '*k_proj'
+  - '*v_proj'
+  - '*o_proj'
+  - '*gate_proj'
+  - '*up_proj'
+  - '*down_proj'
+  exclude_modules:
+  - '*vision*'
+  - '*visual*'
+  - '*image_encoder*'
+  - '*audio*'
+  - '*lm_head*'
+  dim: 16
+  alpha: 32
+  use_triton: false
+checkpoint:
+  enabled: false
+  checkpoint_dir: /workspace/PatchReason/artifacts/raw/checkpoints
+  model_save_format: safetensors
+distributed:
+  _target_: nemo_automodel.components.distributed.fsdp2.FSDP2Manager
+  tp_size: 1
+  pp_size: 1
+  cp_size: 1
+  dp_replicate_size: 1
+  ep_size: 1
+  sequence_parallel: false
+  activation_checkpointing: true
+  defer_fsdp_grad_sync: false
+freeze_config:
+  freeze_vision_tower: true
+  freeze_audio_tower: true
+  freeze_language_model: false
+loss_fn:
+  _target_: nemo_automodel.components.loss.masked_ce.MaskedCrossEntropy
+dataset:
+  _target_: /workspace/PatchReason/scripts/b200_synthetic_dataset.py:make_synthetic_dataset
+  path_or_dataset: synthetic
+  split: train
+dataloader:
+  _target_: torchdata.stateful_dataloader.StatefulDataLoader
+  num_workers: 0
+  collate_fn:
+    _target_: nemo_automodel.components.datasets.vlm.collate_fns.default_collate_fn
+    max_length: 2048
+    drop_overlong: true
+validation_dataset:
+  _target_: /workspace/PatchReason/scripts/b200_synthetic_dataset.py:make_synthetic_dataset
+  path_or_dataset: synthetic
+  split: validation
+validation_dataloader:
+  _target_: torchdata.stateful_dataloader.StatefulDataLoader
+  num_workers: 0
+optimizer:
+  _target_: torch.optim.AdamW
+  lr: 0.0001
+  weight_decay: 0.01
+  betas:
+  - 0.9
+  - 0.95
