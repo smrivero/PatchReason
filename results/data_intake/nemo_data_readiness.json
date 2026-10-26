@@ -1,0 +1,46 @@
+{
+  "project": "PatchReason",
+  "created_at_utc": "2026-10-26T17:21:46.898187+00:00",
+  "source": "https://huggingface.co/datasets/sijjeel/js-vuln-dataset",
+  "source_revision": "7f36e5e1f0868d963c109acae5db4b094950675b",
+  "source_training_admission": "pending_label_spot_review_and_license_review",
+  "nemo_dataset_format": "OpenAI-style messages JSONL",
+  "splits": {
+    "train": {
+      "records": 4000,
+      "labels": {
+        "vulnerable": 2000,
+        "safe": 2000
+      },
+      "source_sha256": "663f5013f817acfaa9ccaa0929817ad22d6907bde8ad4b78d37cc6a5cf299ff8",
+      "nemo_chat_sha256": "e3beeb3df5ae198282bcc815e81a0f4798053b598625670754db5727a1936387"
+    },
+    "validation": {
+      "records": 300,
+      "labels": {
+        "vulnerable": 150,
+        "safe": 150
+      },
+      "source_sha256": "c45f1c12044c471816c7e909a8af76cb27370e58c8fff682f6ca3c084f07d71f",
+      "nemo_chat_sha256": "c87d25fc11251bc7a092e6d2edfdb2226be39ae0eba8a0a01890a58b5a4f686e"
+    },
+    "test": {
+      "records": 300,
+      "labels": {
+        "safe": 150,
+        "vulnerable": 150
+      },
+      "source_sha256": "f5b64971173c09727354623ad7c5d43e7fa5fd6fffbec8e7ad43e166e78e6a42",
+      "nemo_chat_sha256": "3ce0a8f6f4372e8d3dd26c51da178b074a4fc26cea16ca274f21c34cbadb98b4"
+    }
+  },
+  "sample_pending_human_review": 34,
+  "training_approved_rows": 0,
+  "integration_status": "Data prepared; single-B200 LoRA compatibility pending",
+  "quality_caveats": [
+    "Upstream labels not independently verified",
+    "Original code rights review pending",
+    "Repository/CVE-level contamination not fully excluded",
+    "Final evaluation split must remain held out"
+  ]
+}
