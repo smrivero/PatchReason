@@ -113,3 +113,23 @@ The optimized-prompt baseline and LoRA model will use **identical held-out items
 ## Data and security
 
 Use only code you are licensed or authorized to use. Remove credentials, tokens, personal data and customer information. Dataset sources, licenses and curation decisions must be documented. Model-generated suggestions require developer review.
+
+## External dataset intake
+
+PatchReason ingests public-source vulnerability-fix records into a private review queue.
+The ingestion scripts preserve provenance and source revisions. Ingested data are
+**not** automatically labelled as approved training examples. Dataset metadata
+may be committed; unreviewed upstream code stays outside Git.
+
+- [Ingestion workflow and commands](docs/DATA_INGESTION.md)
+- [Data-source rationale](docs/DATASET_SOURCES.md)
+- [Curation methodology](docs/DATASET_METHODOLOGY.md)
+
+No measured fine-tuning improvements or externally sourced training records are
+claimed until their provenance and annotation status have been verified.
+
+### Security weakness coverage
+
+[PatchReason CWE Scope Review](docs/CWE_SCOPE_REVIEW.md) documents how public JavaScript/TypeScript security changes are screened across CWE categories, with reproducible reports and human-review gates. The dataset intake is not automatically approved for model adaptation.
+
+- [Security candidate review and coverage](docs/CANDIDATE_REVIEW.md)

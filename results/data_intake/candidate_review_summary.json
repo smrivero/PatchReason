@@ -1,0 +1,40 @@
+{
+  "project": "PatchReason",
+  "stage": "candidate_manual_review",
+  "generated_at_utc": "2026-10-26T16:06:27.705021+00:00",
+  "source_queue": "datasets/private/external/security_vuln_patches/review_queue_expanded.jsonl",
+  "source_candidates": 71,
+  "unique_repositories": 66,
+  "distinct_cwe_categories": 14,
+  "cwe_counts": {
+    "CWE-22": 1,
+    "CWE-287": 18,
+    "CWE-306": 11,
+    "CWE-352": 4,
+    "CWE-434": 6,
+    "CWE-611": 1,
+    "CWE-78": 1,
+    "CWE-79": 8,
+    "CWE-798": 3,
+    "CWE-862": 6,
+    "CWE-863": 3,
+    "CWE-89": 2,
+    "CWE-918": 1,
+    "CWE-94": 6
+  },
+  "risk_group_counts": {
+    "authentication": 29,
+    "authorization": 9,
+    "credentials": 3,
+    "file_upload": 6,
+    "filesystem": 1,
+    "injection": 17,
+    "request_forgery": 5,
+    "xml": 1
+  },
+  "duplicate_repository_candidate_count": 10,
+  "pending_human_review": 71,
+  "training_approved_rows": 0,
+  "privacy": "CSV includes upstream metadata but contains no raw source code or patch bodies.",
+  "limitations": "No label, fix, original-file context, license, or pretraining independence has been independently validated."
+}
