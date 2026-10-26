@@ -1,149 +1,195 @@
 # PatchReason
 
-**AI-assisted source code security review, specialized with NVIDIA NeMo and LoRA.**
+**AI-assisted JavaScript and TypeScript security review built around Qwen3.5-27B, NVIDIA NeMo AutoModel, and a single NVIDIA B200 Blackwell GPU.**
 
-> **Project context:** This repository implements an illustrative client requirement created as a professional engineering case study. It does not represent a paid client engagement or a deployed commercial service.
+PatchReason is an engineering case study built from a simulated stakeholder requirement. It does not claim a paying client, a commercial production deployment, or measured improvements from fine-tuning that has not yet been executed.
 
-## Business problem
+## Project overview
 
-Engineering teams review TypeScript/Node.js changes under delivery pressure. Manual reviews can overlook authorization flaws, injection, unsafe object updates, and insufficient input handling. Generic LLMs can help but may produce unsupported findings or inconsistent structured output.
+PatchReason implements a React and FastAPI code-security-review application and a reproducible model-adaptation workflow. Its target deployment uses **Qwen3.5-27B on a single NVIDIA B200**, trained with **NVIDIA NeMo AutoModel + LoRA** and served through **vLLM**.
 
-**Objective:** Build a code-review service that analyzes supplied code or pull-request diffs, identifies supported security findings, and produces actionable remediation guidance. Investigate whether task-specific LoRA adaptation improves security review quality relative to the same foundation model with a carefully designed prompt.
+The following project deliverables are implemented and versioned:
 
-## Initial scope
+- React/TypeScript code-review interface with source editor, line highlighting, model selection, connection state, processing feedback, and structured results.
+- Python FastAPI review gateway with input validation, response schemas, API endpoints, and automated tests.
+- Deterministic JavaScript vulnerability-data selection, provenance manifests, duplicate screening, and tokenizer-aware sequence budgeting.
+- A 2,048-token NeMo conversational training export containing 3,953 training examples and 294 validation examples.
+- Versioned NeMo AutoModel single-GPU LoRA configuration, static validation, synthetic compatibility data, and GPU environment/telemetry utilities.
+- Independent evaluation design and documentation for measurements and reproducibility.
 
-- TypeScript / Node.js API code, with emphasis on authorization, SQL injection, and mass assignment.
-- Structured findings: CWE category, severity, evidence, explanation, proposed remediation.
-- Correct handling of secure snippets (no finding).
-- Baseline model vs. LoRA-adapted model comparison using held-out, repository-disjoint evaluation data.
-- Response-quality analysis and NVIDIA GPU performance profiling.
-- A simple comparison UI and an HTTP API.
+**B200 execution status:** The single-GPU recipe has passed local static checks and dataset-format validation. **Model loading, LoRA training, vLLM serving, model-quality measurements, and GPU profiling on the B200 have not yet been verified.** The browser and API are implemented, but the target 27B/B200 serving integration is not claimed as operational.
 
-Out of scope initially: automated merges, production deployment, guaranteed vulnerability coverage, complete repository semantic analysis, or replacing human security review.
+## Technology stack
 
-## Proposed stack
-
-| Layer | Technology | Status |
-|---|---|---|
-| Model | [Qwen3.5-27B](https://huggingface.co/Qwen/Qwen3.5-27B) | Selected; deployment compatibility pending |
-| Fine-tuning | [NVIDIA NeMo AutoModel](https://docs.nvidia.com/nemo/automodel/latest/) + LoRA | Planned |
-| Compute | 1x NVIDIA B200 Blackwell through [Vast.ai](https://vast.ai/) | Not rented |
-| Inference | [vLLM](https://docs.vllm.ai/) | Planned |
-| Evaluation | [Promptfoo](https://www.promptfoo.dev/docs/) + custom metrics | Design stage |
-| GPU profiling | [NVIDIA Nsight Systems](https://developer.nvidia.com/nsight-systems) | Planned |
-| API | Python | Planned |
-| Frontend | React, Vite, TypeScript | Local UI in `app/`. No production deployment |
-
-**Important compatibility gate:** NVIDIA's published Qwen3.5-27B NeMo AutoModel recipe uses a distributed topology (`tp_size=4`, `pp_size=4`, two nodes). This is **not** a validated single-B200 LoRA configuration. We must derive and verify an appropriate single-GPU recipe before production training. Do not claim this as working yet.
+| Layer | Technology | Project implementation |
+| --- | --- | --- |
+| Foundation model | [Qwen3.5-27B](https://huggingface.co/Qwen/Qwen3.5-27B) | Model and tokenizer selected; reproducible configuration |
+| Fine-tuning | [NVIDIA NeMo AutoModel](https://docs.nvidia.com/nemo/automodel/latest/) + LoRA | Versioned single-GPU recipe and local static validator |
+| GPU target | 1× NVIDIA B200 Blackwell via [Vast.ai](https://vast.ai/) | GPU environment gate, training handoff, telemetry utilities |
+| Inference service | [vLLM](https://docs.vllm.ai/) | Serving architecture; B200 integration to be verified |
+| Evaluation | [Promptfoo](https://www.promptfoo.dev/docs/) + custom metrics | Evaluation specification, data partitions, result schemas |
+| GPU profiling | [NVIDIA Nsight Systems](https://developer.nvidia.com/nsight-systems), `nvtop`, `nvidia-smi` | Capture workflow and documentation |
+| API | Python, FastAPI, Pydantic, HTTPX | Implemented HTTP gateway in `api/` |
+| Frontend | React, Vite, TypeScript, Tailwind CSS | Implemented UI in `app/` |
+| Data engineering | Python, Hugging Face Datasets, Qwen tokenizer | Scripts and versioned audits |
 
 ## Architecture
 
+### Target application architecture
+
 ```mermaid
 flowchart LR
-    U[Engineer / PR diff] --> API[PatchReason API]
-    API --> INF[Inference service]
-    INF --> M[Qwen base or LoRA adapter]
-    M --> R[Structured security findings]
-    D[Reviewed dataset] --> N[NVIDIA NeMo training]
-    N --> A[LoRA adapter]
-    A --> INF
-    D --> E[Independent evaluation suite]
-    E --> Q[Quality report]
-    INF --> P[NVIDIA profiling]
-    P --> B[Performance report]
+    A[React / TypeScript UI] -->|POST /api/reviews| B[FastAPI gateway]
+    B -.->|OpenAI-compatible API| C[vLLM on NVIDIA B200]
+    C -.-> D[Qwen3.5-27B + LoRA adapter]
+    D -.-> B
+    B -->|Structured security review| A
 ```
+
+The React and FastAPI components are implemented. **Dotted links indicate the target B200 serving integration, not a completed deployment.**
+
+### Model adaptation pipeline
+
+```mermaid
+flowchart LR
+    A[Hugging Face datasets] --> B[Selection and provenance checks]
+    B --> C[Chat-template token budget: 2048]
+    C --> D[NeMo VLM conversation adapter]
+    D --> E[Single-B200 NeMo LoRA configuration]
+    E -.-> F[GPU compatibility and training]
+    F -.-> G[Independent evaluation]
+    G -.-> H[vLLM serving and profiling]
+```
+
+The data-preparation and static-configuration stages are documented and reproducible. GPU-dependent execution stages require real artifacts before any performance or training outcome is reported.
+
+## Datasets and source provenance
+
+The project references two distinct public Hugging Face datasets. They serve different purposes and are not combined into an implicitly approved training corpus.
+
+| Source | Hugging Face | Pinned source revision | Role |
+| --- | --- | --- | --- |
+| `sijjeel/js-vuln-dataset` | [Dataset card](https://huggingface.co/datasets/sijjeel/js-vuln-dataset) | [`7f36e5e`](https://huggingface.co/datasets/sijjeel/js-vuln-dataset/tree/7f36e5e1f0868d963c109acae5db4b094950675b) | Binary vulnerable/safe JavaScript classification data |
+| `rgaucher/security-vuln-patches` | [Dataset card](https://huggingface.co/datasets/rgaucher/security-vuln-patches) | [`cc56b3a`](https://huggingface.co/datasets/rgaucher/security-vuln-patches/tree/cc56b3a3f17cc6a18c8f385694c14646502999fa) | Vulnerability-patch/CWE candidate screening and source-quality assessment |
+
+### Binary JavaScript dataset
+
+The [upstream dataset](https://huggingface.co/datasets/sijjeel/js-vuln-dataset) contains 9,987 records across its original train (6,990), validation (1,498), and test (1,499) partitions. PatchReason selected a balanced subset while preserving the source partitions.
+
+| Partition | Source records | Selected | Vulnerable | Safe |
+| --- | ---: | ---: | ---: | ---: |
+| Training | 6,990 | 4,000 | 2,000 | 2,000 |
+| Validation | 1,498 | 300 | 150 | 150 |
+| Held-out evaluation | 1,499 | 300 | 150 | 150 |
+
+The selection is deterministic; the recorded manifest reports zero normalized exact duplicates across the selected partitions. This does **not** establish repository-level independence or exclude semantically near-identical examples.
+
+The Qwen3.5-27B chat template and tokenizer were then applied to establish a **2,048-token** sequence budget, including the model response. Over-budget samples were **excluded**, rather than silently truncated:
+
+| Partition | Before budget | Retained | Vulnerable | Safe | Excluded |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Training | 4,000 | **3,953** | 1,974 | 1,979 | 47 |
+| Validation | 300 | **294** | 146 | 148 | 6 |
+| Held-out evaluation | 300 | **300 reserved** | 150 | 150 | Not included in the training export |
+
+The held-out partition remains separate from training and validation. The tokenizer revision used for the recorded budget is `fc05daec18b0a78c049392ed2e771dde82bdf654`.
+
+Source data, derived private training files, and handoff archives remain outside the public repository. Reproducibility metadata is versioned in:
+
+- [`results/data_intake/js_binary_manifest.json`](results/data_intake/js_binary_manifest.json)
+- [`results/data_intake/qwen35_token_audit.json`](results/data_intake/qwen35_token_audit.json)
+- [`results/data_intake/sequence_budget_2048.json`](results/data_intake/sequence_budget_2048.json)
+- [`docs/BINARY_DATASET_PIPELINE.md`](docs/BINARY_DATASET_PIPELINE.md)
+- [`docs/SEQUENCE_LENGTH_POLICY.md`](docs/SEQUENCE_LENGTH_POLICY.md)
+
+### Security patch / CWE candidate dataset
+
+The [security-vuln-patches collection](https://huggingface.co/datasets/rgaucher/security-vuln-patches) contains **355** source records. PatchReason identified **71** JavaScript/TypeScript patch candidates across **14 CWE categories** for closer review. These are **screening candidates**, not 71 confirmed security findings and not approved LoRA training items.
+
+Manual inspection found problematic source classifications, reinforcing the need for patch-level verification rather than relying solely on supplied labels. Evidence and decisions are documented in:
+
+- [`docs/CWE_SCOPE_REVIEW.md`](docs/CWE_SCOPE_REVIEW.md)
+- [`docs/CANDIDATE_REVIEW.md`](docs/CANDIDATE_REVIEW.md)
+- [`docs/DATASET_METHODOLOGY.md`](docs/DATASET_METHODOLOGY.md)
+
+### Data-quality and licensing gate
+
+The Hugging Face pages declare **CC BY 4.0** for `sijjeel/js-vuln-dataset` and **MIT** for `rgaucher/security-vuln-patches`. Those dataset-level declarations do not replace checking the origin and applicable rights of underlying repository code.
+
+Upstream vulnerable/safe labels have not been independently verified for every record. Repository/CVE overlap, semantic near-duplicates, source-label validity, and per-repository code rights require further review before training approval. Binary labels alone do not supervise CWE classification, severity, or remediation generation.
+
+## Run the application locally
+
+The frontend and HTTP API can be started independently of the target B200 deployment. A live review through Qwen3.5-27B becomes available only after an inference service is configured and verified.
+
+Requirements: macOS or Linux with Python 3.10+ and Node.js 20+.
+
+Start and check the API from the repository root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install -r api/requirements-dev.txt
+cp -n api/.env.example api/.env
+python3 -m pytest -q api/tests
+python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Start the React application in another terminal:
+
+```bash
+cd app
+npm ci
+printf '%s\n' 'VITE_API_BASE_URL=http://127.0.0.1:8000' > .env.local
+npm run check
+npm run build
+npm run dev
+```
+
+Open `http://127.0.0.1:5173/review`. The UI reports gateway and model readiness, and only permits live review when a working inference provider is connected. The API includes `GET /api/status`, `GET /api/models`, and `POST /api/reviews`. FastAPI documentation is available at `http://127.0.0.1:8000/docs`.
+
+The intended B200 serving layer is vLLM. Its deployment, adapter compatibility, and integration with the current gateway are separate acceptance checks and are not yet certified by the local UI/API tests.
+
+## Training configuration and evaluation
+
+The repository includes `config/nemo/qwen35_27b_b200_lora_candidate.yaml` and compatibility tooling targeting Qwen3.5-27B, BF16, LoRA rank 16, alpha 32, tensor/pipeline parallelism 1/1, and a 2,048-token budget. Static checks and VLM conversation-format conversion passed for 3,953 training and 294 validation items. A two-step GPU compatibility check using original synthetic examples is defined but has not yet been executed on the B200.
+
+The single-B200 configuration is an adaptation of NVIDIA's published distributed Qwen3.5 recipe, not an NVIDIA-validated single-GPU recipe. The training gate also requires source-label and license review.
+
+The evaluation design includes precision, recall, F1, false positives, JSON-contract compliance, and latency, using independent held-out data. No measured comparative improvement is claimed until an actual base-versus-adapter evaluation exists. GPU traces and model checkpoints likewise require real execution evidence.
 
 ## Repository structure
 
 ```text
-api/                  HTTP service (planned)
-app/                  React comparison interface (local Vite app)
-configs/nemo/         Versioned NeMo configuration work
-configs/promptfoo/    Evaluation provider configuration
-datasets/             Data contract and synthetic reference examples
- docs/                 Scope, architecture, decisions, evaluation and deployment
- results/              Measured output tables (no fabricated numbers)
- screenshots/          Evidence captured from the actual execution
- scripts/              Local data validation and setup utilities
+api/                  FastAPI review gateway and tests
+app/                  React / TypeScript web application
+config/nemo/          Single-GPU LoRA and compatibility configuration candidates
+configs/              Evaluation and other project configuration
+datasets/             Data contracts and original reference code examples
+docs/                 Architecture, data provenance, decisions, deployment
+results/data_intake/  Versioned manifests and quality reports
+screenshots/          Captures of the application and verified GPU execution
+scripts/              Ingestion, audits, packaging, NeMo and GPU utilities
 ```
 
-## Getting started on macOS
+## Documentation and technical references
 
-No GPU and no third-party Python packages are required for the initial dataset validation:
-
-```bash
-cd PatchReason
-python3 scripts/validate_dataset.py datasets/reference_examples.jsonl
-```
-
-The local web UI is in `app/`. It does not need a model server:
-
-```bash
-cd app
-npm install
-npm run check
-npm run dev
-```
-
-See [app/README.md](app/README.md).
-
-When curated examples and source provenance are ready, version dataset manifests while keeping private code, credentials, downloaded model weights and large generated artifacts outside Git.
-
-## Quality metrics
-
-- Finding-level precision, recall and F1.
-- False-positive rate on benign samples.
-- JSON contract compliance.
-- Correct CWE classification and remediation usefulness.
-- GPU memory usage, training throughput, inference tokens/s, latency percentiles.
-
-The optimized-prompt baseline and LoRA model will use **identical held-out items**. Report both successes and regressions; performance claims must link to actual recorded results.
-
-## Project stage
-
-**Design and local preparation.** No model has been fine-tuned for this project, no benchmark metrics have been collected, and no B200 session has been started.
-
-## Documentation
-
-- [Illustrative client brief](docs/PROJECT_BRIEF.md)
+- [Project brief](docs/PROJECT_BRIEF.md)
 - [System architecture](docs/ARCHITECTURE.md)
-- [Architecture decisions and open blockers](docs/DECISIONS.md)
-- [Dataset specification](datasets/README.md)
-- [Evaluation protocol](docs/EVALUATION_PLAN.md)
-- [Vast.ai and NVIDIA deployment readiness](docs/DEPLOYMENT.md)
-- [Web UI implementation](docs/UI_IMPLEMENTATION.md)
+- [Engineering decisions](docs/DECISIONS.md)
+- [HTTP inference gateway](docs/LOCAL_INFERENCE_GATEWAY.md)
+- [Web application](app/README.md)
+- [Data ingestion](docs/DATA_INGESTION.md)
+- [Dataset sources](docs/DATASET_SOURCES.md)
+- [Data processing methodology](docs/DATASET_METHODOLOGY.md)
+- [Sequence-length policy](docs/SEQUENCE_LENGTH_POLICY.md)
+- [Single-B200 NeMo configuration](docs/SINGLE_B200_LORA_CANDIDATE.md)
+- [B200 compatibility plan](docs/B200_COMPATIBILITY_PLAN.md)
+- [GPU observability](docs/OBSERVABILITY.md)
+- [Evaluation methodology](docs/EVALUATION_PLAN.md)
+- [NVIDIA NeMo AutoModel documentation](https://docs.nvidia.com/nemo/automodel/latest/)
+- [NVIDIA NGC NeMo AutoModel container](https://catalog.ngc.nvidia.com/orgs/nvidia/-/containers/nemo-automodel/26.10.00)
 
-## Official references
+## Security and project scope
 
-- [NeMo AutoModel release and container, NVIDIA NGC](https://catalog.ngc.nvidia.com/orgs/nvidia/-/containers/nemo-automodel/26.10.00)
-- [NeMo AutoModel installation guide](https://docs.nvidia.com/nemo/automodel/latest/get-started/installation)
-- [Qwen3.5-27B NeMo model support and distributed recipe](https://docs.nvidia.com/nemo/automodel/latest/model-coverage/vision-language-models/qwen/Qwen3.5-27B)
-- [Qwen3.5-27B model card](https://huggingface.co/Qwen/Qwen3.5-27B)
-- [Promptfoo OpenAI-compatible API configuration](https://www.promptfoo.dev/docs/providers/openai/)
-- [NVIDIA Nsight Systems](https://developer.nvidia.com/nsight-systems)
-
-## Data and security
-
-Use only code you are licensed or authorized to use. Remove credentials, tokens, personal data and customer information. Dataset sources, licenses and curation decisions must be documented. Model-generated suggestions require developer review.
-
-## External dataset intake
-
-PatchReason ingests public-source vulnerability-fix records into a private review queue.
-The ingestion scripts preserve provenance and source revisions. Ingested data are
-**not** automatically labelled as approved training examples. Dataset metadata
-may be committed; unreviewed upstream code stays outside Git.
-
-- [Ingestion workflow and commands](docs/DATA_INGESTION.md)
-- [Data-source rationale](docs/DATASET_SOURCES.md)
-- [Curation methodology](docs/DATASET_METHODOLOGY.md)
-
-No measured fine-tuning improvements or externally sourced training records are
-claimed until their provenance and annotation status have been verified.
-
-### Security weakness coverage
-
-[PatchReason CWE Scope Review](docs/CWE_SCOPE_REVIEW.md) documents how public JavaScript/TypeScript security changes are screened across CWE categories, with reproducible reports and human-review gates. The dataset intake is not automatically approved for model adaptation.
-
-- [Security candidate review and coverage](docs/CANDIDATE_REVIEW.md)
-
-- [Binary vulnerability data pipeline](docs/BINARY_DATASET_PIPELINE.md)
+Do not commit proprietary source code, private dataset exports, model weights, access tokens, or credentials. Model-generated security findings may include false positives or false negatives; PatchReason assists, but does not replace, expert review. The project brief is simulated and makes no claim of a paying customer.
