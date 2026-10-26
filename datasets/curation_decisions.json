@@ -1,0 +1,20 @@
+{
+  "project": "PatchReason",
+  "decisions": [
+    {
+      "source_url": "https://github.com/zdavatz/amiko-web/pull/133",
+      "source_dataset": "rgaucher/security-vuln-patches",
+      "original_cwe": "CWE-611",
+      "decision": "reject",
+      "reason": "The pull request implements prescription data import using JSON and IndexedDB. The original CWE-611 label is not supported by the documented change.",
+      "commit_sha": "70936df",
+      "merge_commit": "f8d7cd3",
+      "review_date": "2026-10-26",
+      "evidence_urls": [
+        "https://github.com/zdavatz/amiko-web/pull/133",
+        "https://github.com/zdavatz/amiko-web/issues/129",
+        "https://cwe.mitre.org/data/definitions/611.html"
+      ]
+    }
+  ]
+}
