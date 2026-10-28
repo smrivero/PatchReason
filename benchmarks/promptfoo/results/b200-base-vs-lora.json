@@ -1,0 +1,1479 @@
+{
+  "evalId": "eval-BWV-2026-10-27T20:34:03",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-10-27T20:34:03.284Z",
+    "prompts": [
+      {
+        "id": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "raw": "{{code}}",
+        "label": "{{code}}",
+        "provider": "Qwen3.5-27B-Base",
+        "metrics": {
+          "score": 4,
+          "testPassCount": 4,
+          "testFailCount": 0,
+          "testErrorCount": 0,
+          "testCacheHitCount": 0,
+          "assertPassCount": 4,
+          "assertFailCount": 0,
+          "totalLatencyMs": 11277,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 4,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      },
+      {
+        "id": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "raw": "{{code}}",
+        "label": "{{code}}",
+        "provider": "Qwen3.5-27B-LoRA",
+        "metrics": {
+          "score": 2,
+          "testPassCount": 2,
+          "testFailCount": 2,
+          "testErrorCount": 0,
+          "testCacheHitCount": 0,
+          "assertPassCount": 2,
+          "assertFailCount": 2,
+          "totalLatencyMs": 12482,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 4,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          },
+          "namedScores": {},
+          "namedScoresCount": {},
+          "namedScoreWeights": {},
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "Expected output \"safe\" to equal \"vulnerable\"",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Expected output \"safe\" to equal \"vulnerable\"",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output \"safe\" to equal \"vulnerable\"",
+              "assertion": {
+                "type": "equals",
+                "value": "vulnerable"
+              }
+            }
+          ]
+        },
+        "id": "6d956af8-79df-4918-a48f-52769bb50cb2",
+        "latencyMs": 4252,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function processUserInput(userInput) {\n  return eval(userInput);\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 1,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-LoRA"
+        },
+        "response": {
+          "raw": "{\"id\":\"4d83fdf7-d4d0-4ca6-a02c-6bedfee2fd61\",\"created_at\":\"2026-10-27T20:34:07.595702+00:00\",\"model\":\"Qwen/Qwen3.5-27B+lora\",\"model_id\":\"Qwen/Qwen3.5-27B+lora\",\"model_name\":\"patchreason-lora\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":2570,\"usage\":{\"prompt_tokens\":94,\"completion_tokens\":7},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 4252,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "685",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:03 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "Unsafe eval",
+          "vars": {
+            "code": "function processUserInput(userInput) {\n  return eval(userInput);\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "vulnerable"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function processUserInput(userInput) {\n  return eval(userInput);\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "685",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:03 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "vulnerable"
+              }
+            }
+          ]
+        },
+        "id": "ff9ac45a-22d4-45c6-bef5-fc42ac6bc5f0",
+        "latencyMs": 2859,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function processUserInput(userInput) {\n  return eval(userInput);\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-Base"
+        },
+        "response": {
+          "raw": "{\"id\":\"f45939a5-531f-4874-82a0-f055f1aafbc5\",\"created_at\":\"2026-10-27T20:34:06.199800+00:00\",\"model\":\"Qwen/Qwen3.5-27B\",\"model_id\":\"Qwen/Qwen3.5-27B\",\"model_name\":\"Qwen/Qwen3.5-27B\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":true,\"summary\":\"Binary classification: vulnerable.\",\"findings\":[],\"latency_ms\":1640,\"usage\":{\"prompt_tokens\":94,\"completion_tokens\":11},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2859,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "664",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:03 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "vulnerable",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Unsafe eval",
+          "vars": {
+            "code": "function processUserInput(userInput) {\n  return eval(userInput);\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "vulnerable"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function processUserInput(userInput) {\n  return eval(userInput);\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "664",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:03 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "error": "Expected output \"safe\" to equal \"vulnerable\"",
+        "gradingResult": {
+          "pass": false,
+          "score": 0,
+          "reason": "Expected output \"safe\" to equal \"vulnerable\"",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Expected output \"safe\" to equal \"vulnerable\"",
+              "assertion": {
+                "type": "equals",
+                "value": "vulnerable"
+              }
+            }
+          ]
+        },
+        "id": "ad6b1f4b-3b90-4dfd-974e-5b88ae4acf86",
+        "latencyMs": 3081,
+        "namedScores": {},
+        "prompt": {
+          "raw": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 1,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-LoRA"
+        },
+        "response": {
+          "raw": "{\"id\":\"80fbba8e-477e-4953-8e45-1fae42b8aa4d\",\"created_at\":\"2026-10-27T20:34:10.700909+00:00\",\"model\":\"Qwen/Qwen3.5-27B+lora\",\"model_id\":\"Qwen/Qwen3.5-27B+lora\",\"model_name\":\"patchreason-lora\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":1698,\"usage\":{\"prompt_tokens\":103,\"completion_tokens\":7},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 3081,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "686",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:07 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 0,
+        "success": false,
+        "testCase": {
+          "description": "Hardcoded password",
+          "vars": {
+            "code": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "vulnerable"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "686",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:07 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "vulnerable"
+              }
+            }
+          ]
+        },
+        "id": "2f6f78f5-faf2-417f-8d6f-4da0f5ced72a",
+        "latencyMs": 2921,
+        "namedScores": {},
+        "prompt": {
+          "raw": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-Base"
+        },
+        "response": {
+          "raw": "{\"id\":\"a3335459-7d00-4a2b-b26b-e999e9d6345d\",\"created_at\":\"2026-10-27T20:34:09.180318+00:00\",\"model\":\"Qwen/Qwen3.5-27B\",\"model_id\":\"Qwen/Qwen3.5-27B\",\"model_name\":\"Qwen/Qwen3.5-27B\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":true,\"summary\":\"Binary classification: vulnerable.\",\"findings\":[],\"latency_ms\":1721,\"usage\":{\"prompt_tokens\":103,\"completion_tokens\":11},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2921,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "665",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:05 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "vulnerable",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Hardcoded password",
+          "vars": {
+            "code": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "vulnerable"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 1,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "665",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:05 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "safe"
+              }
+            }
+          ]
+        },
+        "id": "11cabd7a-e823-44a4-b6d4-0203a108421f",
+        "latencyMs": 2981,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-Base"
+        },
+        "response": {
+          "raw": "{\"id\":\"05f6cda9-72dd-4acc-98c8-9abf84c26257\",\"created_at\":\"2026-10-27T20:34:12.176114+00:00\",\"model\":\"Qwen/Qwen3.5-27B\",\"model_id\":\"Qwen/Qwen3.5-27B\",\"model_name\":\"Qwen/Qwen3.5-27B\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":1763,\"usage\":{\"prompt_tokens\":104,\"completion_tokens\":11},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2981,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "677",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:08 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Safe arithmetic",
+          "vars": {
+            "code": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "safe"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "677",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:08 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "safe"
+              }
+            }
+          ]
+        },
+        "id": "1771ca5d-4d74-4047-bf27-6af112239a86",
+        "latencyMs": 2833,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 1,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-LoRA"
+        },
+        "response": {
+          "raw": "{\"id\":\"ac4e1d00-4e69-4a1d-a336-ab220c964104\",\"created_at\":\"2026-10-27T20:34:13.546520+00:00\",\"model\":\"Qwen/Qwen3.5-27B+lora\",\"model_id\":\"Qwen/Qwen3.5-27B+lora\",\"model_name\":\"patchreason-lora\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":1523,\"usage\":{\"prompt_tokens\":104,\"completion_tokens\":7},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2833,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "686",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:10 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Safe arithmetic",
+          "vars": {
+            "code": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "safe"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 2,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "686",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:10 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "safe"
+              }
+            }
+          ]
+        },
+        "id": "8343e59e-de0a-4451-a047-387fd52a2864",
+        "latencyMs": 2516,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 0,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-Base"
+        },
+        "response": {
+          "raw": "{\"id\":\"628af827-3dc2-42e0-9da7-f315ead1fbaf\",\"created_at\":\"2026-10-27T20:34:14.707340+00:00\",\"model\":\"Qwen/Qwen3.5-27B\",\"model_id\":\"Qwen/Qwen3.5-27B\",\"model_name\":\"Qwen/Qwen3.5-27B\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":1442,\"usage\":{\"prompt_tokens\":106,\"completion_tokens\":11},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2516,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "677",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:11 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Safe input validation",
+          "vars": {
+            "code": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "safe"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 3,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "677",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:11 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      },
+      {
+        "cost": 0,
+        "gradingResult": {
+          "pass": true,
+          "score": 1,
+          "reason": "All assertions passed",
+          "namedScores": {},
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "equals",
+                "value": "safe"
+              }
+            }
+          ]
+        },
+        "id": "7b39889c-6099-4da8-8359-ea8e86739eed",
+        "latencyMs": 2316,
+        "namedScores": {},
+        "prompt": {
+          "raw": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}",
+          "label": "{{code}}",
+          "config": {}
+        },
+        "promptId": "43615bf4394342016d9f010141dbbd14bed72d7805d79da8c7628abce999c16c",
+        "promptIdx": 1,
+        "provider": {
+          "id": "http://127.0.0.1:8001/api/reviews",
+          "label": "Qwen3.5-27B-LoRA"
+        },
+        "response": {
+          "raw": "{\"id\":\"0cb788c0-42df-4dff-83b2-8574add6bfe3\",\"created_at\":\"2026-10-27T20:34:15.875840+00:00\",\"model\":\"Qwen/Qwen3.5-27B+lora\",\"model_id\":\"Qwen/Qwen3.5-27B+lora\",\"model_name\":\"patchreason-lora\",\"provider\":\"vllm\",\"mode\":\"live\",\"is_demo\":false,\"vulnerable\":false,\"summary\":\"Binary classification: not marked vulnerable.\",\"findings\":[],\"latency_ms\":1292,\"usage\":{\"prompt_tokens\":106,\"completion_tokens\":7},\"limitations\":[\"The adapter was supervised only on binary labels; CWE, line, severity and remediation were not generated.\",\"Dataset label quality and underlying source-code licenses are pending review.\",\"Predictions are unverified and can contain false positives or false negatives.\"]}",
+          "latencyMs": 2316,
+          "cached": false,
+          "metadata": {
+            "http": {
+              "status": 200,
+              "statusText": "OK",
+              "headers": {
+                "content-length": "686",
+                "content-type": "application/json",
+                "date": "Tue, 27 Oct 2026 20:34:12 GMT",
+                "server": "uvicorn",
+                "vary": "Origin"
+              }
+            }
+          },
+          "output": "safe",
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0,
+                "cacheReadInputTokens": 0,
+                "cacheCreationInputTokens": 0
+              }
+            }
+          }
+        },
+        "score": 1,
+        "success": true,
+        "testCase": {
+          "description": "Safe input validation",
+          "vars": {
+            "code": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}\n"
+          },
+          "assert": [
+            {
+              "type": "equals",
+              "value": "safe"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 3,
+        "tokenUsage": {
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "total": 0,
+          "numRequests": 1,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          },
+          "assertions": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0,
+              "cacheReadInputTokens": 0,
+              "cacheCreationInputTokens": 0
+            }
+          }
+        },
+        "vars": {
+          "code": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}\n"
+        },
+        "metadata": {
+          "http": {
+            "status": 200,
+            "statusText": "OK",
+            "headers": {
+              "content-length": "686",
+              "content-type": "application/json",
+              "date": "Tue, 27 Oct 2026 20:34:12 GMT",
+              "server": "uvicorn",
+              "vary": "Origin"
+            }
+          },
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 0
+      }
+    ],
+    "stats": {
+      "successes": 6,
+      "failures": 2,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 8,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0,
+          "cacheReadInputTokens": 0,
+          "cacheCreationInputTokens": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0,
+            "cacheReadInputTokens": 0,
+            "cacheCreationInputTokens": 0
+          }
+        }
+      },
+      "durationMs": 12590,
+      "evaluationDurationMs": 12590
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "PatchReason B200 - Base vs LoRA classification benchmark",
+    "prompts": [
+      "{{code}}"
+    ],
+    "providers": [
+      {
+        "id": "http",
+        "label": "Qwen3.5-27B-Base",
+        "config": {
+          "url": "http://127.0.0.1:8001/api/reviews",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "model": "Qwen/Qwen3.5-27B",
+            "language": "javascript",
+            "code": "{{code}}"
+          },
+          "transformResponse": "json.vulnerable ? 'vulnerable' : 'safe'",
+          "maxRetries": 0
+        }
+      },
+      {
+        "id": "http",
+        "label": "Qwen3.5-27B-LoRA",
+        "config": {
+          "url": "http://127.0.0.1:8001/api/reviews",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "body": {
+            "model": "Qwen/Qwen3.5-27B+lora",
+            "language": "javascript",
+            "code": "{{code}}"
+          },
+          "transformResponse": "json.vulnerable ? 'vulnerable' : 'safe'",
+          "maxRetries": 0
+        }
+      }
+    ],
+    "tests": [
+      {
+        "description": "Unsafe eval",
+        "vars": {
+          "code": "function processUserInput(userInput) {\n  return eval(userInput);\n}\n"
+        },
+        "assert": [
+          {
+            "type": "equals",
+            "value": "vulnerable"
+          }
+        ]
+      },
+      {
+        "description": "Hardcoded password",
+        "vars": {
+          "code": "const ADMIN_PASSWORD = \"secret123\";\nfunction authenticate(input) {\n  return input === ADMIN_PASSWORD;\n}\n"
+        },
+        "assert": [
+          {
+            "type": "equals",
+            "value": "vulnerable"
+          }
+        ]
+      },
+      {
+        "description": "Safe arithmetic",
+        "vars": {
+          "code": "function calculateTotal(items) {\n  return items.reduce((sum, item) => sum + item.price, 0);\n}\n"
+        },
+        "assert": [
+          {
+            "type": "equals",
+            "value": "safe"
+          }
+        ]
+      },
+      {
+        "description": "Safe input validation",
+        "vars": {
+          "code": "function validateAge(age) {\n  return Number.isInteger(age) && age >= 0 && age <= 120;\n}\n"
+        },
+        "assert": [
+          {
+            "type": "equals",
+            "value": "safe"
+          }
+        ]
+      }
+    ],
+    "env": {},
+    "outputPath": [
+      "benchmarks/promptfoo/results/b200-base-vs-lora.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {
+      "maxConcurrency": 2,
+      "cache": false,
+      "timeoutMs": 180000
+    },
+    "basePath": "/Users/smrivero/Documents/GitHub/PatchReason/benchmarks/promptfoo"
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.125.1",
+    "nodeVersion": "v24.22.1",
+    "platform": "darwin",
+    "arch": "x64",
+    "exportedAt": "2026-10-27T20:34:15.979Z",
+    "evaluationCreatedAt": "2026-10-27T20:34:03.284Z"
+  },
+  "vars": [
+    "code"
+  ],
+  "runtimeOptions": {
+    "eventSource": "cli",
+    "maxConcurrency": 2,
+    "cache": false,
+    "timeoutMs": 180000,
+    "showProgressBar": true,
+    "repeat": 1
+  }
+}

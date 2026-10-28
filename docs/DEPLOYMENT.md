@@ -1,41 +1,29 @@
-# NVIDIA B200 Deployment Readiness
+# B200 deployment
 
-## Candidate hardware
+PatchReason serves Qwen3.5-27B and its LoRA adapter through vLLM on an NVIDIA B200. The React application connects through `api/b200_gateway.py`.
 
-- Provider: Vast.ai
-- GPU: 1x NVIDIA B200 Blackwell, advertised around 179 GB usable VRAM
-- Observed listing from user: USD 6.255/hour; not a reserved rate
-- Billing: compute plus potential storage/bandwidth charges
+## Service connection
 
-## Candidate NVIDIA container
+Keep vLLM bound to the GPU host loopback interface and forward its port through SSH. Configure the gateway with `api/.env.b200` or environment variables:
 
-- Official release: `nvcr.io/nvidia/nemo-automodel:26.10.00`
-- NVIDIA NGC: https://catalog.ngc.nvidia.com/orgs/nvidia/-/containers/nemo-automodel/26.10.00
-- Installation: https://docs.nvidia.com/nemo/automodel/latest/get-started/installation
+- `VLLM_BASE_URL`: forwarded endpoint, default `http://127.0.0.1:18000/v1`.
+- `VLLM_BASE_MODEL`: upstream base-model name, default `Qwen/Qwen3.5-27B`.
+- `VLLM_LORA_NAME`: upstream adapter name, default `patchreason-lora`.
+- `VLLM_TIMEOUT_SECONDS`: request timeout, default `180`.
+- `CORS_ORIGINS`: allowed frontend origins.
 
-**Do not deploy based only on the container tag.** Confirm host driver compatibility, selected image architecture, NeMo Qwen3.5 support and single-device training recipe first. Pin the content digest once validated. The published NeMo Qwen3.5-27B recipe targets multi-node GPUs; single-B200 LoRA requires an adapted configuration.
+From the repository root, after installing `api/requirements.txt`:
 
-## Before renting
+```bash
+python3 -m uvicorn api.b200_gateway:app --host 127.0.0.1 --port 8000
+```
 
-- [ ] Dataset sources and licensing recorded; label quality reviewed
-- [ ] Train/validation/evaluation split frozen
-- [ ] Baseline prompts and metrics defined
-- [ ] NeMo adapter configuration ready for a very short initial training pass
-- [ ] Container/driver compatibility checked against selected offer
-- [ ] SSH access and safe output transfer commands prepared
-- [ ] Storage capacity/budget computed and hard spending limit selected
-- [ ] GPU monitoring and profiling permissions planned
+Set `VITE_API_BASE_URL=http://127.0.0.1:8000` in `app/.env.local`. Check `/api/health`, `/api/status`, and `/api/models` before requesting a review. The LoRA option requires the adapter to be loaded by vLLM.
 
-## Once rented
+## Training and evidence
 
-1. Check `nvidia-smi`, driver, GPU type and disk availability.
-2. Inspect Python, NeMo, PyTorch and CUDA in the container.
-3. Validate model loading and a minimal LoRA backward/update cycle.
-4. Record baseline response quality, then run actual fine-tuning.
-5. Run quality evaluation and characterize inference performance.
-6. Archive checkpoints, config, evaluations and profiler reports.
-7. Copy outputs to Mac, confirm integrity, and terminate the instance.
+See [NeMo configurations](../config/nemo/README.md), [observability](OBSERVABILITY.md), and [the recorded execution evidence](../README.md#training-on-nvidia-b200). Preserve model and tokenizer revisions, container digest, driver and framework versions, configuration, checkpoint identity, and profiler settings for each new run.
 
-## Secure access
+## Access controls
 
-Use SSH tunneling to reach HTTP services from the Mac. Keep the model endpoint private. Avoid opening an unauthenticated inference service to the internet.
+The gateway has no built-in user authentication. Keep it on loopback for local access; shared deployments require an authenticated proxy and network controls. Store credentials on the server, outside version control and frontend environment variables.

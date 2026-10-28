@@ -259,7 +259,7 @@ function ArtifactTable() {
     <section className="panel" id="artifact-checklist">
       <h2 className="text-base font-semibold">Artifact checklist</h2>
       <p className="mt-2 text-sm text-mute">
-        Paths follow docs/OBSERVABILITY.md and docs/UI_CAPTURE_GUIDE.md. A screenshot becomes evidence only after the underlying
+        Paths follow docs/OBSERVABILITY.md and docs/GPU_SCREENSHOT_MATRIX.md. A screenshot becomes evidence only after the underlying
         measurement exists.
       </p>
       <div className="mt-3 overflow-x-auto">

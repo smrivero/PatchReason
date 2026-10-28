@@ -1,0 +1,1733 @@
+{
+  "description": "PatchReason B200 inference benchmark 120 cases Base vs LoRA",
+  "prompts": [
+    "{{code}}"
+  ],
+  "providers": [
+    {
+      "id": "http",
+      "label": "Qwen3.5-27B-Base",
+      "config": {
+        "url": "http://127.0.0.1:8001/api/reviews",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "model": "Qwen/Qwen3.5-27B",
+          "language": "javascript",
+          "filename": "benchmark.js",
+          "code": "{{code}}"
+        },
+        "transformResponse": "(json) => { if (typeof json.vulnerable !== 'boolean') throw new Error('Missing vulnerable boolean'); return { output: json.vulnerable ? 'vulnerable' : 'safe', tokenUsage: { prompt: json.usage?.prompt_tokens, completion: json.usage?.completion_tokens, total: (json.usage?.prompt_tokens || 0) + (json.usage?.completion_tokens || 0) }, metadata: { latency_ms: json.latency_ms, request_id: json.id, model_id: json.model_id, mode: json.mode, raw_response: json } };}",
+        "maxRetries": 0
+      }
+    },
+    {
+      "id": "http",
+      "label": "Qwen3.5-27B-LoRA",
+      "config": {
+        "url": "http://127.0.0.1:8001/api/reviews",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "model": "Qwen/Qwen3.5-27B+lora",
+          "language": "javascript",
+          "filename": "benchmark.js",
+          "code": "{{code}}"
+        },
+        "transformResponse": "(json) => { if (typeof json.vulnerable !== 'boolean') throw new Error('Missing vulnerable boolean'); return { output: json.vulnerable ? 'vulnerable' : 'safe', tokenUsage: { prompt: json.usage?.prompt_tokens, completion: json.usage?.completion_tokens, total: (json.usage?.prompt_tokens || 0) + (json.usage?.completion_tokens || 0) }, metadata: { latency_ms: json.latency_ms, request_id: json.id, model_id: json.model_id, mode: json.mode, raw_response: json } };}",
+        "maxRetries": 0
+      }
+    }
+  ],
+  "tests": [
+    {
+      "description": "eval-01",
+      "vars": {
+        "code": "function task_1(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-02",
+      "vars": {
+        "code": "function task_2(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-03",
+      "vars": {
+        "code": "function task_3(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-04",
+      "vars": {
+        "code": "function task_4(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-05",
+      "vars": {
+        "code": "function task_5(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-06",
+      "vars": {
+        "code": "function task_6(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-07",
+      "vars": {
+        "code": "function task_7(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-08",
+      "vars": {
+        "code": "function task_8(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-09",
+      "vars": {
+        "code": "function task_9(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "eval-10",
+      "vars": {
+        "code": "function task_10(input) { return eval(input); }",
+        "category": "eval",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-01",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_1(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-02",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_2(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-03",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_3(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-04",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_4(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-05",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_5(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-06",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_6(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-07",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_7(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-08",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_8(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-09",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_9(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "command_injection-10",
+      "vars": {
+        "code": "const cp = require('child_process'); function task_10(input) { cp.exec('echo ' + input); }",
+        "category": "command_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-01",
+      "vars": {
+        "code": "function task_1(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-02",
+      "vars": {
+        "code": "function task_2(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-03",
+      "vars": {
+        "code": "function task_3(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-04",
+      "vars": {
+        "code": "function task_4(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-05",
+      "vars": {
+        "code": "function task_5(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-06",
+      "vars": {
+        "code": "function task_6(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-07",
+      "vars": {
+        "code": "function task_7(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-08",
+      "vars": {
+        "code": "function task_8(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-09",
+      "vars": {
+        "code": "function task_9(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "sql_injection-10",
+      "vars": {
+        "code": "function task_10(db, id) { return db.query('SELECT * FROM users WHERE id=' + id); }",
+        "category": "sql_injection",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-01",
+      "vars": {
+        "code": "function task_1(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-02",
+      "vars": {
+        "code": "function task_2(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-03",
+      "vars": {
+        "code": "function task_3(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-04",
+      "vars": {
+        "code": "function task_4(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-05",
+      "vars": {
+        "code": "function task_5(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-06",
+      "vars": {
+        "code": "function task_6(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-07",
+      "vars": {
+        "code": "function task_7(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-08",
+      "vars": {
+        "code": "function task_8(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-09",
+      "vars": {
+        "code": "function task_9(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "xss-10",
+      "vars": {
+        "code": "function task_10(element, input) { element.innerHTML = input; }",
+        "category": "xss",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-01",
+      "vars": {
+        "code": "function task_1() { return { apiKey: 'production-secret-1' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-02",
+      "vars": {
+        "code": "function task_2() { return { apiKey: 'production-secret-2' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-03",
+      "vars": {
+        "code": "function task_3() { return { apiKey: 'production-secret-3' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-04",
+      "vars": {
+        "code": "function task_4() { return { apiKey: 'production-secret-4' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-05",
+      "vars": {
+        "code": "function task_5() { return { apiKey: 'production-secret-5' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-06",
+      "vars": {
+        "code": "function task_6() { return { apiKey: 'production-secret-6' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-07",
+      "vars": {
+        "code": "function task_7() { return { apiKey: 'production-secret-7' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-08",
+      "vars": {
+        "code": "function task_8() { return { apiKey: 'production-secret-8' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-09",
+      "vars": {
+        "code": "function task_9() { return { apiKey: 'production-secret-9' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "hardcoded_secret-10",
+      "vars": {
+        "code": "function task_10() { return { apiKey: 'production-secret-10' }; }",
+        "category": "hardcoded_secret",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-01",
+      "vars": {
+        "code": "const fs = require('fs'); function task_1(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-02",
+      "vars": {
+        "code": "const fs = require('fs'); function task_2(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-03",
+      "vars": {
+        "code": "const fs = require('fs'); function task_3(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-04",
+      "vars": {
+        "code": "const fs = require('fs'); function task_4(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-05",
+      "vars": {
+        "code": "const fs = require('fs'); function task_5(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-06",
+      "vars": {
+        "code": "const fs = require('fs'); function task_6(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-07",
+      "vars": {
+        "code": "const fs = require('fs'); function task_7(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-08",
+      "vars": {
+        "code": "const fs = require('fs'); function task_8(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-09",
+      "vars": {
+        "code": "const fs = require('fs'); function task_9(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "path_traversal-10",
+      "vars": {
+        "code": "const fs = require('fs'); function task_10(name) { return fs.readFileSync('/data/' + name); }",
+        "category": "path_traversal",
+        "expected_label": "vulnerable"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "vulnerable"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-01",
+      "vars": {
+        "code": "function task_1(input) { return JSO1.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-02",
+      "vars": {
+        "code": "function task_2(input) { return JSO2.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-03",
+      "vars": {
+        "code": "function task_3(input) { return JSO3.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-04",
+      "vars": {
+        "code": "function task_4(input) { return JSO4.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-05",
+      "vars": {
+        "code": "function task_5(input) { return JSO5.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-06",
+      "vars": {
+        "code": "function task_6(input) { return JSO6.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-07",
+      "vars": {
+        "code": "function task_7(input) { return JSO7.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-08",
+      "vars": {
+        "code": "function task_8(input) { return JSO8.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-09",
+      "vars": {
+        "code": "function task_9(input) { return JSO9.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_json-10",
+      "vars": {
+        "code": "function task_10(input) { return JSO10.parse(input); }",
+        "category": "safe_json",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-01",
+      "vars": {
+        "code": "function task_1(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-02",
+      "vars": {
+        "code": "function task_2(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-03",
+      "vars": {
+        "code": "function task_3(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-04",
+      "vars": {
+        "code": "function task_4(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-05",
+      "vars": {
+        "code": "function task_5(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-06",
+      "vars": {
+        "code": "function task_6(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-07",
+      "vars": {
+        "code": "function task_7(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-08",
+      "vars": {
+        "code": "function task_8(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-09",
+      "vars": {
+        "code": "function task_9(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_text-10",
+      "vars": {
+        "code": "function task_10(element, input) { element.textContent = input; }",
+        "category": "safe_text",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-01",
+      "vars": {
+        "code": "function task_1(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-02",
+      "vars": {
+        "code": "function task_2(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-03",
+      "vars": {
+        "code": "function task_3(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-04",
+      "vars": {
+        "code": "function task_4(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-05",
+      "vars": {
+        "code": "function task_5(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-06",
+      "vars": {
+        "code": "function task_6(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-07",
+      "vars": {
+        "code": "function task_7(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-08",
+      "vars": {
+        "code": "function task_8(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-09",
+      "vars": {
+        "code": "function task_9(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_sql-10",
+      "vars": {
+        "code": "function task_10(db, id) { return db.query('SELECT * FROM users WHERE id = ?', [id]); }",
+        "category": "safe_sql",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-01",
+      "vars": {
+        "code": "function task_1(a, b) { return 1umber(a) + 1umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-02",
+      "vars": {
+        "code": "function task_2(a, b) { return 2umber(a) + 2umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-03",
+      "vars": {
+        "code": "function task_3(a, b) { return 3umber(a) + 3umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-04",
+      "vars": {
+        "code": "function task_4(a, b) { return 4umber(a) + 4umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-05",
+      "vars": {
+        "code": "function task_5(a, b) { return 5umber(a) + 5umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-06",
+      "vars": {
+        "code": "function task_6(a, b) { return 6umber(a) + 6umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-07",
+      "vars": {
+        "code": "function task_7(a, b) { return 7umber(a) + 7umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-08",
+      "vars": {
+        "code": "function task_8(a, b) { return 8umber(a) + 8umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-09",
+      "vars": {
+        "code": "function task_9(a, b) { return 9umber(a) + 9umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_math-10",
+      "vars": {
+        "code": "function task_10(a, b) { return 10umber(a) + 10umber(b); }",
+        "category": "safe_math",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-01",
+      "vars": {
+        "code": "const path = require('path'); function task_1() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-02",
+      "vars": {
+        "code": "const path = require('path'); function task_2() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-03",
+      "vars": {
+        "code": "const path = require('path'); function task_3() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-04",
+      "vars": {
+        "code": "const path = require('path'); function task_4() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-05",
+      "vars": {
+        "code": "const path = require('path'); function task_5() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-06",
+      "vars": {
+        "code": "const path = require('path'); function task_6() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-07",
+      "vars": {
+        "code": "const path = require('path'); function task_7() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-08",
+      "vars": {
+        "code": "const path = require('path'); function task_8() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-09",
+      "vars": {
+        "code": "const path = require('path'); function task_9() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_path-10",
+      "vars": {
+        "code": "const path = require('path'); function task_10() { return path.join('/data', 'public.txt'); }",
+        "category": "safe_path",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-01",
+      "vars": {
+        "code": "function task_1(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-02",
+      "vars": {
+        "code": "function task_2(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-03",
+      "vars": {
+        "code": "function task_3(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-04",
+      "vars": {
+        "code": "function task_4(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-05",
+      "vars": {
+        "code": "function task_5(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-06",
+      "vars": {
+        "code": "function task_6(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-07",
+      "vars": {
+        "code": "function task_7(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-08",
+      "vars": {
+        "code": "function task_8(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-09",
+      "vars": {
+        "code": "function task_9(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    },
+    {
+      "description": "safe_validation-10",
+      "vars": {
+        "code": "function task_10(value) { return typeof value === 'string' && value.length < 100; }",
+        "category": "safe_validation",
+        "expected_label": "safe"
+      },
+      "assert": [
+        {
+          "type": "equals",
+          "value": "safe"
+        }
+      ]
+    }
+  ],
+  "evaluateOptions": {
+    "maxConcurrency": 2,
+    "cache": false,
+    "timeoutMs": 180000
+  }
+}

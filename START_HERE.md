@@ -1,14 +1,11 @@
-# Start here (macOS)
+# Getting started
 
-1. Unpack this archive into your preferred project directory and rename its folder to `PatchReason`.
-2. Run `python3 scripts/validate_dataset.py datasets/reference_examples.jsonl`.
-3. Run `git init -b main`, `git add .`, `git commit -m "Initialize PatchReason project documentation"`.
-4. Create a new, empty GitHub repository named `PatchReason` under `smrivero` (no README/license initialized on GitHub).
-5. If your `github-smrivero` SSH alias is configured, connect using:
+PatchReason combines a React interface, a FastAPI inference gateway, and dataset and model evaluation workflows.
 
-```bash
-git remote add origin git@github-smrivero:smrivero/PatchReason.git
-git push -u origin main
-```
+1. Follow [the root README](README.md#run-the-application-locally) to install dependencies and start the B200/vLLM gateway and web application.
+2. Read [the product requirements](docs/PROJECT_BRIEF.md) for scope and planned extensions.
+3. Review [the binary dataset pipeline](docs/BINARY_DATASET_PIPELINE.md) for provenance and partitioning.
+4. Consult [the gateway guide](api/README.md) for the alternative Ollama/Jetson backend.
+5. Use [the deployment notes](docs/DEPLOYMENT.md) for infrastructure checks and private endpoint access.
 
-Until the repo exists on GitHub, `git remote add` does not create it. If the repository is already configured, inspect `git remote -v` rather than adding it twice.
+Training and evaluation evidence is summarized in the root README. Imported measurements and reference annotations remain distinct in the interface.

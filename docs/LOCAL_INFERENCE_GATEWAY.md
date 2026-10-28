@@ -1,11 +1,13 @@
 # Local Inference Gateway: Jetson Qwen3.5:4B
 
+For the primary B200/vLLM backend, see [deployment instructions](DEPLOYMENT.md). This guide describes the alternative Ollama backend.
+
 ## Engineering objective
 
 Provide a functioning end-to-end code review workflow for the PatchReason web
 interface while the target NVIDIA B200 / NeMo LoRA pipeline is still being
 prepared. The local Jetson Qwen3.5:4B acts as a **temporary pretrained
-model**, not a surrogate for the proposed Qwen3.5-27B LoRA model.
+model**, not a surrogate for the Qwen3.5-27B LoRA model.
 
 ## Architecture and trust boundaries
 

@@ -1,6 +1,6 @@
-# PatchReason — Illustrative Client Requirement
+# PatchReason — Product Requirements
 
-**Engagement type:** Fictional client scenario used to define a realistic software-delivery objective. No actual customer or commercial deployment is claimed.
+Engineering requirements for private JavaScript and TypeScript security screening, model evaluation, and reviewer workflows.
 
 ## Situation
 

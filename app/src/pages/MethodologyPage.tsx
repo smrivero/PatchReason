@@ -12,7 +12,7 @@ const documents = [
   ["Binary dataset pipeline", "docs/BINARY_DATASET_PIPELINE.md"],
   ["Evaluation protocol", "docs/EVALUATION_PLAN.md"],
   ["Observability", "docs/OBSERVABILITY.md"],
-  ["UI capture guide", "docs/UI_CAPTURE_GUIDE.md"],
+  ["Evidence capture matrix", "docs/GPU_SCREENSHOT_MATRIX.md"],
   ["Data quality findings", "docs/DATA_QUALITY_FINDINGS.md"],
   ["CWE scope review", "docs/CWE_SCOPE_REVIEW.md"],
   ["Deployment notes", "docs/DEPLOYMENT.md"],
@@ -29,12 +29,12 @@ export function MethodologyPage() {
       <section className="panel space-y-3 text-sm leading-6">
         <h2 className="text-base font-semibold">Project status</h2>
         <p>
-          PatchReason is a local engineering view for a simulated stakeholder brief. It is not a production deployment and it does not
-          claim a paying client.
+          PatchReason provides private JavaScript and TypeScript security screening through a React interface, a FastAPI gateway,
+          and model inference. The initial release returns binary vulnerable or safe classifications.
         </p>
         <p>
-          Upstream labels are pending review. Fine-tuning has not been run, and no quality improvement has been measured. Pretraining
-          overlap with the source corpus cannot be excluded. The binary dataset has no CWE, severity, or fix labels.
+          Source-label review and pretraining overlap remain limitations. The root README documents the completed B200 LoRA run
+          and held-out evaluation. The binary dataset has no CWE, severity, or fix labels.
         </p>
       </section>
       <section className="panel space-y-3 text-sm leading-6">
@@ -61,7 +61,7 @@ export function MethodologyPage() {
             </p>
             <p>
               {datasetFacts.facts.loraCandidate.configPath} is prepared and passed the offline structural checks in
-              scripts/validate_b200_candidate.py. GPU runtime validation is pending. Training has not started.
+              scripts/validate_b200_candidate.py. This manifest records preparation-stage checks; completed training evidence is documented in the root README.
             </p>
             <p className="break-all font-mono text-xs">{datasetFacts.facts.binary.sourceRevision}</p>
             <p>{datasetFacts.facts.binary.sampling}</p>
@@ -93,8 +93,8 @@ export function MethodologyPage() {
           comparison page has nothing to say about quality.
         </p>
         <p>
-          Qwen3.5-27B is the selected base. NVIDIA's published NeMo recipe is a distributed topology. configs/nemo records that a
-          single-B200 file is still unwritten.
+          Qwen3.5-27B is the selected base. The single-B200 configuration is maintained in config/nemo,
+          alongside compatibility and full-epoch configurations.
         </p>
       </section>
       <section className="panel space-y-3 text-sm">
@@ -117,7 +117,7 @@ export function MethodologyPage() {
           scripts/capture_gpu_telemetry.sh 300 training-run-01. Raw CSV and .nsys-rep files stay under artifacts/raw, which is gitignored.
           The GPU page charts a CSV or a payload marked collection measured. It does not draw .nsys-rep.
         </p>
-        <p>No B200 rental, driver version, container digest, or throughput number is recorded yet.</p>
+        <p>The root README links B200 execution and profiling captures. This page does not infer throughput from screenshots.</p>
       </section>
       <section className="panel space-y-3 text-sm">
         <h2 className="text-base font-semibold">Gateway contracts</h2>
@@ -130,7 +130,7 @@ export function MethodologyPage() {
           <li>GET {apiPaths.gpuTelemetry}?run_id=...</li>
           <li>GET {apiPaths.runs}</li>
         </ul>
-        <p>A later FastAPI process should reach vLLM through an SSH tunnel or an authenticated reverse proxy.</p>
+        <p>The FastAPI gateway connects to the inference backend. Keep backend credentials and network configuration on the server.</p>
       </section>
       <section className="panel">
         <h2 className="text-base font-semibold">Repository documents</h2>

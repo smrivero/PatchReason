@@ -33,7 +33,7 @@ python scripts/validate_js_vulnerability_data.py
 python -m json.tool results/data_intake/js_binary_manifest.json
 ```
 
-The prepared `messages` JSONL is a portable intermediary format, **not yet a verified NeMo AutoModel recipe**. A pinned NeMo container configuration and its loader/collator contract will be established separately before renting the B200.
+The prepared `messages` JSONL is the intermediate export. `scripts/b200_patchreason_dataset.py` adapts it for the NeMo VLM training path; see [the maintained configurations](../config/nemo/README.md) and the root README for training evidence.
 
 ## Evaluation scope
 

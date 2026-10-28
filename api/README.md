@@ -1,8 +1,8 @@
-# PatchReason Inference Gateway
+# PatchReason Inference Gateways
 
-A FastAPI service that connects the React code-review UI to Ollama running
-Qwen3.5:4B on an NVIDIA Jetson. This temporary inference target is **not**
-the fine-tuned Qwen3.5-27B model planned for the NVIDIA B200.
+The primary B200/vLLM gateway is `api/b200_gateway.py`; follow [deployment instructions](../docs/DEPLOYMENT.md) for Qwen3.5-27B base and LoRA inference.
+
+The alternative Ollama gateway, `api/main.py`, connects to Qwen3.5:4B on an NVIDIA Jetson. The instructions below apply to that backend. Model identity is reported explicitly in each response.
 
 ## Architecture
 

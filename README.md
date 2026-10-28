@@ -67,7 +67,7 @@ The separate patch dataset contained 355 source records. Screening identified 71
 
 The public repository includes provenance manifests, audit reports and pipeline documentation. Original dataset records remain at their linked sources.
 
-Relevant repository files: [`docs/BINARY_DATASET_PIPELINE.md`](docs/BINARY_DATASET_PIPELINE.md), [`docs/DATASET_METHODOLOGY.md`](docs/DATASET_METHODOLOGY.md), [`docs/SEQUENCE_LENGTH_POLICY.md`](docs/SEQUENCE_LENGTH_POLICY.md), [`results/data_intake/js_binary_manifest.json`](results/data_intake/js_binary_manifest.json), [`results/data_intake/sequence_budget_2048.json`](results/data_intake/sequence_budget_2048.json).
+Relevant repository files: [`docs/BINARY_DATASET_PIPELINE.md`](docs/BINARY_DATASET_PIPELINE.md), [`docs/SEQUENCE_LENGTH_POLICY.md`](docs/SEQUENCE_LENGTH_POLICY.md), [`results/data_intake/js_binary_manifest.json`](results/data_intake/js_binary_manifest.json), [`results/data_intake/sequence_budget_2048.json`](results/data_intake/sequence_budget_2048.json).
 
 ## Training on NVIDIA B200
 
@@ -145,10 +145,11 @@ From the repository root:
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r api/requirements-dev.txt
-cp -n api/.env.example api/.env
 python3 -m pytest -q api/tests
-python3 -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
+python3 -m uvicorn api.b200_gateway:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+The B200 gateway reads `api/.env.b200` when present. Set `VLLM_BASE_URL` to the private vLLM endpoint (default: `http://127.0.0.1:18000/v1` through an SSH tunnel). The upstream service must expose `Qwen/Qwen3.5-27B` and, for adapted inference, `patchreason-lora`; override these names with `VLLM_BASE_MODEL` and `VLLM_LORA_NAME` as needed. The API tests above cover the alternative Ollama gateway; they do not verify a live B200 deployment. See [the gateway guide](api/README.md) for the Ollama/Jetson configuration.
 
 In a second terminal:
 
@@ -184,9 +185,8 @@ scripts/               Dataset, training, packaging and GPU utilities
 - [Architecture](docs/ARCHITECTURE.md)
 - [Engineering decisions](docs/DECISIONS.md)
 - [Data ingestion](docs/DATA_INGESTION.md)
-- [Dataset sources](docs/DATASET_SOURCES.md)
-- [Dataset methodology](docs/DATASET_METHODOLOGY.md)
-- [B200 configuration](docs/SINGLE_B200_LORA_CANDIDATE.md)
+- [Binary dataset methodology](docs/BINARY_DATASET_PIPELINE.md)
+- [B200 configuration](config/nemo/README.md)
 - [GPU observability](docs/OBSERVABILITY.md)
 - [Evaluation methodology](docs/EVALUATION_PLAN.md)
 - [NVIDIA NeMo AutoModel](https://docs.nvidia.com/nemo/automodel/latest/)

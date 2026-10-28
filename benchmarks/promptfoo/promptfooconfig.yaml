@@ -1,0 +1,80 @@
+description: PatchReason B200 - Base vs LoRA classification benchmark
+
+prompts:
+  - '{{code}}'
+
+providers:
+  - id: http
+    label: Qwen3.5-27B-Base
+    config:
+      url: http://127.0.0.1:8001/api/reviews
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        model: Qwen/Qwen3.5-27B
+        language: javascript
+        code: '{{code}}'
+      transformResponse: "json.vulnerable ? 'vulnerable' : 'safe'"
+      maxRetries: 0
+
+  - id: http
+    label: Qwen3.5-27B-LoRA
+    config:
+      url: http://127.0.0.1:8001/api/reviews
+      method: POST
+      headers:
+        Content-Type: application/json
+      body:
+        model: Qwen/Qwen3.5-27B+lora
+        language: javascript
+        code: '{{code}}'
+      transformResponse: "json.vulnerable ? 'vulnerable' : 'safe'"
+      maxRetries: 0
+
+tests:
+  - description: Unsafe eval
+    vars:
+      code: |
+        function processUserInput(userInput) {
+          return eval(userInput);
+        }
+    assert:
+      - type: equals
+        value: vulnerable
+
+  - description: Hardcoded password
+    vars:
+      code: |
+        const ADMIN_PASSWORD = "secret123";
+        function authenticate(input) {
+          return input === ADMIN_PASSWORD;
+        }
+    assert:
+      - type: equals
+        value: vulnerable
+
+  - description: Safe arithmetic
+    vars:
+      code: |
+        function calculateTotal(items) {
+          return items.reduce((sum, item) => sum + item.price, 0);
+        }
+    assert:
+      - type: equals
+        value: safe
+
+  - description: Safe input validation
+    vars:
+      code: |
+        function validateAge(age) {
+          return Number.isInteger(age) && age >= 0 && age <= 120;
+        }
+    assert:
+      - type: equals
+        value: safe
+
+evaluateOptions:
+  maxConcurrency: 2
+  cache: false
+  timeoutMs: 180000

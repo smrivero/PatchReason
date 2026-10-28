@@ -2,9 +2,9 @@
 
 ## Business context
 
-PatchReason is a portfolio implementation of a **simulated client requirement** for automated TypeScript/Node.js security code review. No real client engagement is claimed.
+PatchReason provides private JavaScript/TypeScript security screening with a source-data review pipeline for model adaptation.
 
-The product aims to detect actionable security defects, explain their root causes, recommend remediations, and minimize false findings. Qwen3.5-27B will be adapted with NVIDIA NeMo AutoModel and LoRA on one NVIDIA B200 Blackwell GPU once the source data and infrastructure are ready.
+The initial release performs binary vulnerability classification. Detailed findings and remediation are planned extensions. This document records the candidate-screening stage; the root README describes the subsequent Qwen3.5-27B adaptation with NVIDIA NeMo AutoModel and LoRA on one NVIDIA B200 Blackwell GPU.
 
 ## Why the initial dataset scope changed
 
@@ -75,4 +75,4 @@ Expand coverage with [CVEfixes](https://github.com/secureIT-project/CVEfixes) an
 
 Related industry reference: [OWASP Top 10:2025](https://top10.owasp.org/2025/).
 
-The worklist is a **review inventory**, not a finalized training dataset. Results and performance claims remain pending implementation and measurement.
+The worklist is a **review inventory**, not a finalized training dataset. This queue is separate from the binary training and evaluation workflow documented in the root README.
