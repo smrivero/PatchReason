@@ -44,7 +44,7 @@ function GatewayFacts({ gateway }: { gateway: GatewaySnapshot }) {
     return (
       <p>
         Set VITE_API_BASE_URL to http://127.0.0.1:8000 and start the local FastAPI gateway. The browser talks only to that gateway.
-        Ollama stays behind the Mac SSH tunnel.
+        vLLM stays behind the Mac SSH tunnel.
       </p>
     );
   }

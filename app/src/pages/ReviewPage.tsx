@@ -10,7 +10,7 @@ import { usePageTitle } from "../hooks/usePageTitle";
 import { useWorkspace } from "../hooks/useWorkspace";
 import { postLiveReview, readApiBase } from "../lib/api/client";
 import { findReviewExample, illustrativeReview } from "../lib/fixtures/reviewExamples";
-import { baselineModel, jetsonModelId } from "../lib/models/catalog";
+import { baselineModel, baselineModelId } from "../lib/models/catalog";
 import { resolveFindingLine } from "../lib/review/resolveFindingLine";
 import { LIVE_MAX_CODE_CHARS, MAX_CODE_CHARS, buildLiveReviewRequest } from "../lib/review/validateRequest";
 import type { IllustrativeReview, LanguageId, ModelResponse, ReviewPaneState } from "../types/domain";
@@ -18,7 +18,7 @@ import type { IllustrativeReview, LanguageId, ModelResponse, ReviewPaneState } f
 export function ReviewPage() {
   usePageTitle("Code review");
   const { draft, setDraft, gateway, refreshGateway } = useWorkspace();
-  const [modelId, setModelId] = useState(jetsonModelId);
+  const [modelId, setModelId] = useState<string>(baselineModelId);
   const [pane, setPane] = useState<ReviewPaneState>({ kind: "idle" });
   const [savedReview, setSavedReview] = useState<ModelResponse | null>(null);
   const [submittedCode, setSubmittedCode] = useState<string | null>(null);
@@ -30,15 +30,12 @@ export function ReviewPage() {
   const requestId = useRef(0);
   const base = readApiBase();
   const liveModels = gateway.kind === "online" && gateway.models.kind === "ready" ? gateway.models.models : [];
-  const jetson = liveModels.find((model) => model.id === jetsonModelId);
+  const selectedModel = liveModels.find((model) => model.id === modelId);
   const inferenceReady =
     gateway.kind === "online" &&
     gateway.status.inference === "ready" &&
-    gateway.status.liveModelId === jetsonModelId &&
-    gateway.status.loraTrained === false &&
-    modelId === jetsonModelId &&
-    jetson !== undefined &&
-    jetson.availability.kind === "served";
+    selectedModel !== undefined &&
+    selectedModel.availability.kind === "served";
 
   useEffect(() => {
     if (pane.kind !== "loading") return;
@@ -61,17 +58,13 @@ export function ReviewPage() {
 
   async function submitReview(): Promise<void> {
     if (abortRef.current !== null) return;
-    if (modelId !== jetsonModelId) {
-      setFormError("Select Jetson Qwen3.5:4B. Qwen3.5-27B and the B200 LoRA adapter are reserved for a later gateway.");
-      return;
-    }
-    const request = buildLiveReviewRequest(draft);
+    const request = buildLiveReviewRequest(draft, modelId);
     if (request.kind === "error") {
       setFormError(request.message);
       return;
     }
     if (base.kind !== "ready" || !inferenceReady) {
-      setFormError("Live review stays disabled until the FastAPI gateway reports Jetson Qwen3.5:4B ready.");
+      setFormError("Live review requires the selected B200 model to be served by vLLM.");
       return;
     }
     const controller = new AbortController();
@@ -141,7 +134,7 @@ export function ReviewPage() {
     <div className="space-y-5">
       <PageHeader
         title="Code review"
-        lede="Paste JavaScript or TypeScript. Sample code keeps its reference annotation separate from Jetson findings. Review code calls the local FastAPI gateway."
+        lede="Paste JavaScript or TypeScript. Sample annotations are distinct from model predictions. Reviews use FastAPI and the B200 vLLM service."
       />
       <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.15fr)_minmax(18rem,0.85fr)]">
         <section className="panel space-y-4">
@@ -188,7 +181,7 @@ export function ReviewPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-mute">
               {draft.code.length} / {MAX_CODE_CHARS} characters in the editor. A live review sends at most {LIVE_MAX_CODE_CHARS}{" "}
-              characters to Jetson Qwen3.5:4B.
+              characters to the selected model.
             </p>
             <div className="flex flex-wrap gap-2">
               <button type="button" className="btn" onClick={showReference}>
@@ -219,7 +212,7 @@ export function ReviewPage() {
           </div>
           <GatewayStatus />
           {inferenceReady || pane.kind === "loading" ? null : (
-            <p className="text-sm text-mute">Review code stays disabled until Jetson Qwen3.5:4B is ready.</p>
+            <p className="text-sm text-mute">Review code becomes available when the selected B200 model is served.</p>
           )}
           {formError.length > 0 ? <Callout tone="error">{formError}</Callout> : null}
         </section>
@@ -281,7 +274,7 @@ function reviewIdleTitle(baseKind: "unset" | "invalid" | "ready"): string {
 
 function reviewIdleBody(baseKind: "unset" | "invalid" | "ready"): string {
   if (baseKind === "ready") {
-    return "Run Review code when Jetson Qwen3.5:4B is ready. Sample annotations stay labeled as reference text.";
+    return "Run Review code when the selected B200 model is ready. Sample annotations stay labeled as reference text.";
   }
   return "Set VITE_API_BASE_URL to http://127.0.0.1:8000. Sample annotations stay labeled as reference text.";
 }

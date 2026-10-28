@@ -14,16 +14,16 @@ export const baselineModel: CatalogModel = {
   id: baselineModelId,
   displayName: "Qwen3.5-27B baseline",
   role: "baseline",
-  revision: "Model card Qwen/Qwen3.5-27B. A local weight revision has not been recorded.",
-  availabilityNote: "Not deployed. The browser does not call vLLM.",
+  revision: "Hugging Face revision fc05daec18b0a78c049392ed2e771dde82bdf654.",
+  availabilityNote: "Available when the B200 vLLM endpoint is ready.",
 };
 
 export const adaptedModel: CatalogModel = {
   id: adaptedModelId,
-  displayName: "Qwen3.5-27B LoRA, not trained",
+  displayName: "Qwen3.5-27B LoRA",
   role: "adapted",
-  revision: "config/nemo/qwen35_27b_b200_lora_candidate.yaml. No checkpoint has been written.",
-  availabilityNote: "Configuration is prepared. GPU runtime validation has not run, and training has not started.",
+  revision: "NeMo AutoModel PEFT checkpoint; full-epoch evaluation pending.",
+  availabilityNote: "Available when vLLM has loaded the LoRA adapter.",
 };
 
 export const catalogModels: readonly [CatalogModel, CatalogModel] = [baselineModel, adaptedModel];

@@ -54,9 +54,23 @@ export function parseSimpleYaml(source: string): ParseResult<YamlMap> {
     if (line.trim().length === 0) continue;
     const indent = line.match(/^ */)?.[0].length ?? 0;
     const content = line.trim();
+    const isListItem = content.startsWith("- ");
     while (stack.length > 1) {
       const top = stack[stack.length - 1];
       if (top === undefined || indent > top.indent) break;
+
+      // YAML permits sequences at the same indentation as their key.
+      if (
+        isListItem &&
+        indent === top.indent &&
+        (Array.isArray(top.container) ||
+          (isMap(top.container) &&
+            Object.keys(top.container).length === 0 &&
+            top.ownerKey !== null))
+      ) {
+        break;
+      }
+
       stack.pop();
     }
     const parent = stack[stack.length - 1];

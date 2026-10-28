@@ -57,17 +57,17 @@ export function buildReviewRequest(input: { draft: CodeDraft; modelId: ModelId }
 export interface LiveReviewRequest {
   code: string;
   language: LanguageId;
-  model: typeof jetsonModelId;
+  model: string;
   filename: string | null;
 }
 
-export function buildLiveReviewRequest(draft: CodeDraft): ParseResult<LiveReviewRequest> {
+export function buildLiveReviewRequest(draft: CodeDraft, modelId: string = jetsonModelId): ParseResult<LiveReviewRequest> {
   const code = draft.code;
   if (code.trim().length < LIVE_MIN_CODE_CHARS) {
     return err(`Add at least ${String(LIVE_MIN_CODE_CHARS)} characters before requesting a live review.`);
   }
   if (code.length > LIVE_MAX_CODE_CHARS) {
-    return err(`The Jetson gateway accepts at most ${String(LIVE_MAX_CODE_CHARS)} characters.`);
+    return err(`The live gateway accepts at most ${String(LIVE_MAX_CODE_CHARS)} characters.`);
   }
   if (code.includes("\u0000")) return err("Code cannot include null bytes.");
   const filename = draft.filename.trim();
@@ -77,7 +77,7 @@ export function buildLiveReviewRequest(draft: CodeDraft): ParseResult<LiveReview
   return ok({
     code,
     language: draft.language,
-    model: jetsonModelId,
+    model: modelId,
     filename: filename.length === 0 ? null : filename,
   });
 }

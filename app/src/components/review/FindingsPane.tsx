@@ -122,9 +122,9 @@ export function FindingsPane({
         <div className="panel space-y-3" role="status" aria-live="polite">
           <div className="flex items-center gap-3">
             <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-line border-t-accent" aria-hidden="true" />
-            <h2 className="text-sm font-semibold">Analyzing code with Qwen3.5:4B on Jetson</h2>
+            <h2 className="text-sm font-semibold">Analyzing code on NVIDIA B200</h2>
           </div>
-          <p className="text-sm text-paper">Model jetson-qwen35-4b. Elapsed {String(progress.elapsedSeconds)} s.</p>
+          <p className="text-sm text-paper">Selected model. Elapsed {String(progress.elapsedSeconds)} s.</p>
           <p className="text-sm text-mute">The editor stays available. A second review waits until this one finishes or you cancel it.</p>
           <button type="button" className="btn" onClick={progress.onCancel}>
             Cancel review
@@ -154,7 +154,7 @@ export function FindingsPane({
           </div>
           <p className="text-sm leading-6 text-mute">
               Source {state.review.source}, example {state.review.exampleId}. {state.review.context} This is a reference annotation
-              for the sample. It is not a finding from Jetson Qwen3.5:4B.
+              for the sample. It is not a live model finding.
             </p>
             <p className="text-sm">Timing: {formatTiming(state.review.timing)}</p>
             <CopyActions

@@ -43,3 +43,6 @@ datasets/evaluation.jsonl
 **/*[Cc][Uu][Rr][Ss][Oo][Rr]*.md
 **/[Aa][Gg][Ee][Nn][Tt].md
 **/[Aa][Gg][Ee][Nn][Tt][Ss].md
+
+# Private local B200 inference configuration
+api/.env.b200

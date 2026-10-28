@@ -68,12 +68,12 @@ function readDetail(data: unknown): string | null {
 
 function readHttpError(error: unknown): string {
   if (!axios.isAxiosError(error)) return "The request failed.";
-  if (error.code === "ECONNABORTED") return "The gateway timed out before Jetson inference returned.";
+  if (error.code === "ECONNABORTED") return "The inference gateway timed out.";
   const status = error.response?.status;
   const detail = readDetail(error.response?.data);
-  if (status === 409) return detail ?? "That model is not available on this gateway. Select Jetson Qwen3.5:4B.";
-  if (status === 503) return detail ?? "Ollama is unreachable. Check the SSH tunnel and that qwen3.5:4b is loaded.";
-  if (status === 504) return detail ?? "Jetson inference timed out.";
+  if (status === 409) return detail ?? "That model is not currently served by the gateway.";
+  if (status === 503) return detail ?? "The inference service is unreachable. Check the SSH tunnel and model server.";
+  if (status === 504) return detail ?? "The model inference timed out.";
   if (status === 502) return detail ?? "The model response was not valid structured JSON.";
   if (detail !== null) return detail;
   if (status === undefined) return "The gateway did not respond. Start the local FastAPI gateway and confirm the SSH tunnel.";
@@ -308,7 +308,7 @@ function parseJetsonReview(value: Record<string, unknown>): ParseResult<ModelRes
   const modelName = readString(value, "model_name");
   if (modelId.kind === "error") return modelId;
   if (modelName.kind === "error") return modelName;
-  if (modelId.value !== jetsonModelId) return err("The live review did not come from jetson-qwen35-4b.");
+  if (modelId.value !== jetsonModelId && modelId.value !== "Qwen/Qwen3.5-27B" && modelId.value !== "Qwen/Qwen3.5-27B+lora") return err("The live review returned an unsupported model ID.");
   if (value.mode !== "live") return err("The review mode is not live.");
   if (typeof value.vulnerable !== "boolean") return err("vulnerable must be a boolean.");
   const summary = readString(value, "summary");
@@ -352,12 +352,12 @@ function parseJetsonReview(value: Record<string, unknown>): ParseResult<ModelRes
   return ok({
     kind: "model",
     modelId: modelId.value,
-    displayName: "Jetson Qwen3.5:4B (pretrained)",
-    role: "baseline",
+    displayName: modelId.value === jetsonModelId ? "Jetson Qwen3.5:4B (pretrained)" : modelId.value === "Qwen/Qwen3.5-27B+lora" ? "Qwen3.5-27B + LoRA" : "Qwen3.5-27B (pretrained)",
+    role: modelId.value === "Qwen/Qwen3.5-27B+lora" ? "adapted" : "baseline",
     revision: modelName.value,
     findings,
     timing: { kind: "measured", latencyMs: value.latency_ms },
-    headline: jetsonLiveLabel,
+    headline: modelId.value === jetsonModelId ? jetsonLiveLabel : "Live inference · NVIDIA B200 / vLLM",
     summary: summary.value,
     limitations,
     vulnerable: value.vulnerable,
