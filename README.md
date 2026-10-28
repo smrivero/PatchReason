@@ -1,16 +1,16 @@
 # PatchReason
 
-**GPU-accelerated code-security classification with Qwen3.5-27B, NVIDIA NeMo AutoModel, LoRA, vLLM, and NVIDIA B200 Blackwell.**
+**Private, GPU-accelerated JavaScript and TypeScript security classification powered by Qwen3.5-27B, NVIDIA NeMo AutoModel, LoRA, vLLM, and NVIDIA B200 Blackwell.**
 
-PatchReason is an end-to-end applied ML engineering project covering dataset preparation, single-GPU parameter-efficient fine-tuning, model serving, quantitative evaluation, inference benchmarking, and GPU profiling. A React/TypeScript client and FastAPI gateway provide an interface for reviewing JavaScript and TypeScript source files.
+PatchReason addresses an enterprise requirement for private, GPU-accelerated source-code security screening. The solution combines a React/TypeScript application, a FastAPI gateway, Qwen3.5-27B inference through vLLM, and a LoRA adapter fine-tuned on an NVIDIA B200 Blackwell GPU. The implementation covers dataset preparation, model adaptation, checkpointing, quantitative evaluation, inference benchmarking, and GPU profiling.
 
-Developed against a simulated product requirement, the project includes executed B200 fine-tuning, adapter checkpointing, inference serving, evaluation, and GPU profiling.
+**Version 1 scope:** PatchReason currently performs **binary vulnerability classification** of JavaScript and TypeScript code, returning a `vulnerable` or `safe` prediction. It is an initial screening capability; vulnerability categories (CWE), exact code locations, severity ratings, and remediation suggestions are planned extensions, not outputs of the current model.
 
 ## Application preview
 
 ![PatchReason React code review interface with live Qwen3.5-27B inference](screenshots/application-live-review.jpg)
 
-The React interface connects to a FastAPI gateway that routes JavaScript and TypeScript snippets to the selected vLLM model. Model classifications and separately sourced reference annotations are identified distinctly in the UI.
+The React interface connects to a FastAPI gateway that sends JavaScript and TypeScript snippets to the selected vLLM model and displays the binary security classification. Reference annotations, when shown, are separate from model predictions.
 
 ## Engineering highlights
 
@@ -42,7 +42,7 @@ flowchart LR
     TRAIN --> NS[Nsight Systems profiling]
 ```
 
-The live gateway accepted `POST /api/reviews` with a source-code payload, language, filename and model identifier. It exposed model discovery, status, evaluation summary, runs and GPU telemetry endpoints. The deployed LoRA was trained for **binary vulnerable/safe classification**. CWE identification, line-level evidence, severity and remediation generation were not supervised outputs of this adapter; those fields should not be interpreted as independently validated model findings.
+The live gateway supports `POST /api/reviews` with a source-code payload, language, filename, and model identifier, plus model discovery and status endpoints. **The initial release focuses on identifying potentially vulnerable code through binary classification.** Detailed vulnerability identification, line-level evidence, severity scoring, and remediation guidance are future development areas. The evaluation-summary, runs, and GPU-telemetry routes are currently interface placeholders.
 
 ## Dataset engineering
 
@@ -131,7 +131,7 @@ Promptfoo exercised both vLLM-backed variants through the FastAPI gateway with 2
 
 The gateway recorded latency and token counts, while MLflow captured evaluation history and run-level metrics. These measurements were collected through the same NVIDIA B200 deployment. The gateway logs token counts and server-reported request latency.
 
-## Experimental evidence
+## Implementation evidence
 
 The screenshots document the React application, B200 execution environment, completed training, GPU telemetry, Nsight Systems timeline and MLflow held-out evaluation. The recorded evidence can be paired with the archived artifacts and run metadata.
 
@@ -194,4 +194,4 @@ scripts/               Dataset, training, packaging and GPU utilities
 
 ## Reproducibility
 
-The repository contains the source application, data preparation and validation tooling, versioned model configuration, and technical documentation for the single-B200 workflow. The training objective is binary vulnerable/safe classification. External dataset and model links identify the original sources; the public release does not distribute credentials, private data exports, or foundation-model weights.
+The repository contains the source application, data preparation and validation tooling, versioned model configuration, and technical documentation for the single-B200 workflow. The current model is a first-version binary vulnerable/safe classifier. External dataset and model links identify the original sources; the public release does not distribute credentials, private data exports, or foundation-model weights.
